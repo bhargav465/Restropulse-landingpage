@@ -1,0 +1,63 @@
+{
+  "settings": {
+    "currencySymbol": "₹",
+    "adminDemoUrl": "https://bhargav465.github.io/restropulse-v2/admin-v2/",
+    "yearlyMonthsCharged": 10
+  },
+  "plans": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "tagline": "Get your restaurant online",
+      "monthlyPrice": 299,
+      "featured": false,
+      "order": 1,
+      "active": true,
+      "cta": "Start free trial",
+      "features": [
+        "Online ordering storefront (your own link)",
+        "Menu manager with variants & add-ons",
+        "Table reservations",
+        "Order dashboard with live status",
+        "Email support"
+      ]
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "tagline": "Marketing on autopilot",
+      "monthlyPrice": 1299,
+      "featured": true,
+      "badge": "Most popular",
+      "order": 2,
+      "active": true,
+      "cta": "Start free trial",
+      "features": [
+        "Everything in Starter",
+        "AI Content Engine — 30 posts / month",
+        "Auto-publish to Instagram & Facebook",
+        "Funnel analytics & customer cohorts",
+        "WhatsApp campaigns (500 sends / month)",
+        "Priority support"
+      ]
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "tagline": "For serious growth & multi-outlet",
+      "monthlyPrice": 4999,
+      "featured": false,
+      "order": 3,
+      "active": true,
+      "cta": "Start free trial",
+      "features": [
+        "Everything in Growth",
+        "Unlimited AI posts & campaigns",
+        "Campaign ROI attribution",
+        "Restaurant Intelligence (early access)",
+        "Website Design templates (early access)",
+        "Dedicated onboarding & phone support"
+      ]
+    }
+  ]
+}
