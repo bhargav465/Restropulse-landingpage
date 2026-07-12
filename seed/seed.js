@@ -80,6 +80,35 @@ async function main() {
     console.log(`✓ asset ${a.key} seeded ([SAMPLE] placeholder)`);
   }
 
+  // pages — every HTML file in seed/pages/ becomes a `pages` document.
+  // Slug = filename without extension; title = <title> tag (or slug).
+  const pagesDir = path.join(__dirname, "pages");
+  if (fs.existsSync(pagesDir)) {
+    await db.collection("pages").createIndex({ slug: 1 }, { unique: true });
+    const files = fs.readdirSync(pagesDir).filter(f => /\.html?$/i.test(f));
+    for (const f of files) {
+      const slug = f.replace(/\.html?$/i, "");
+      const html = fs.readFileSync(path.join(pagesDir, f), "utf8");
+      const m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+      const title = m ? m[1].trim() : slug;
+      await db.collection("pages").updateOne(
+        { slug },
+        {
+          $set: {
+            slug,
+            title,
+            html,
+            contentType: "text/html; charset=utf-8",
+            active: true,
+            updatedAt: new Date()
+          }
+        },
+        { upsert: true }
+      );
+      console.log(`✓ page "${slug}" seeded from seed/pages/${f} (${(Buffer.byteLength(html) / 1024).toFixed(1)} KB) → /pages/${slug}`);
+    }
+  }
+
   console.log("Done.");
   process.exit(0);
 }

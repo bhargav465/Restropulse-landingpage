@@ -24,12 +24,16 @@ MongoDB collections:
 | `settings` | One doc (`_id: "landing"`): currency symbol, demo URL, yearly discount |
 | `plans` | One doc per pricing plan (`id`, `name`, `monthlyPrice`, `features[]`, `order`, `active`, `featured`, `badge`) |
 | `assets` | One doc per image (`key`, `contentType`, `data` base64) |
+| `pages` | One doc per full HTML page (`slug`, `title`, `html`, `contentType`, `active`) — a whole page served straight from the DB |
 
 API:
 
 - `GET /api/config/plans` → `{ success, data: { currencySymbol, adminDemoUrl, yearlyMonthsCharged, plans } }`
 - `GET /api/assets/:key` → the image binary
 - `GET /api/assets` → list of stored image keys
+- `GET /pages/:slug` → renders a full HTML page stored in MongoDB
+- `GET /api/pages` → list of stored pages (metadata, no html)
+- `GET /api/pages/:slug` → one page as JSON (includes `html`, for editing)
 
 If MongoDB is down (or the file is opened directly), the page silently falls
 back to the defaults embedded in `index.html` — it never breaks.
@@ -71,6 +75,20 @@ Image slots the page already uses:
 Slots are optional — if a key has no image in MongoDB, the page keeps its
 default look. To add a new slot, add `<img data-asset="your-key">` in
 `index.html` and upload with `set-asset`.
+
+**Store a whole HTML page in MongoDB** — a complete document served straight
+from the DB at `/pages/<slug>` (no code deploy to change it):
+
+```bash
+# any .html file → a `pages` document (slug + title auto-derived)
+npm run set-page -- landing ./seed/pages/landing.html
+# then open http://localhost:3005/pages/landing
+```
+
+Every `.html` file dropped in `seed/pages/` is also loaded by `npm run seed`
+(slug = filename, title = its `<title>` tag). `seed/pages/landing.html` ships
+by default. Hide a page with `active: false`; re-uploading the same slug
+replaces it.
 
 **Change copy/headlines**: edit `public/index.html` (plain HTML).
 **Change colors**: the CSS variables at the top of `index.html`
