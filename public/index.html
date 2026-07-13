@@ -555,6 +555,62 @@
   .preview.has-shot .dash-img { display: block; }
   .preview.has-shot .preview-inner { display: none; }
 
+  /* ============ Hero report widget + loss mock + nudge ============ */
+  .hero-widget {
+    max-width: 540px; margin: 4px auto 14px; position: relative;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 8px 8px 18px;
+    box-shadow: 0 12px 34px rgba(36,27,53,0.10);
+    transition: box-shadow .25s, border-color .2s;
+  }
+  .hero-widget:focus-within { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft), 0 12px 34px rgba(36,27,53,0.12); }
+  .hero-widget .hw-ico { color: var(--muted); display: flex; flex: none; }
+  .hero-widget input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-size: 15px; font-family: var(--font-body); color: var(--ink); min-width: 0;
+  }
+  .hero-widget .btn { white-space: nowrap; border-radius: 999px; padding: 11px 20px; }
+  .hero-links { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .hero-links a { color: var(--muted); font-weight: 500; }
+  .hero-links a:hover { color: var(--primary-strong); }
+
+  .loss-mock { background: var(--bg); border-radius: 16px; padding: 18px; text-align: left; }
+  .loss-head { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+  .loss-head .lm-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); flex: none; }
+  .lm-list { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .lm-row { display: flex; align-items: center; gap: 12px; padding: 9px 13px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .lm-row:last-child { border-bottom: none; }
+  .lm-rk { width: 22px; height: 22px; border-radius: 7px; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; flex: none; }
+  .lm-nm { font-weight: 500; }
+  .lm-rt { margin-left: auto; color: var(--warning); font-weight: 600; white-space: nowrap; }
+  .lm-row.you { background: var(--primary-soft); border-left: 3px solid var(--primary); }
+  .lm-row.you .lm-nm { color: var(--primary-strong); font-weight: 700; }
+  .lm-row.you .lm-rk { background: var(--grad); color: #fff; border-color: transparent; }
+  .lm-banner { margin-top: 14px; background: rgba(233,162,59,.10); border: 1px solid rgba(233,162,59,.3); border-radius: 12px; padding: 14px; }
+  .lm-loss { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+  .lm-loss b { color: var(--danger); font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+  .lm-issue { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--muted); padding: 3px 0; }
+  .lm-ic { width: 18px; height: 18px; border-radius: 50%; background: rgba(233,162,59,.18); color: var(--warning); font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; flex: none; }
+
+  .nudge {
+    position: fixed; z-index: 60; left: 50%; bottom: 18px;
+    width: min(560px, calc(100% - 24px));
+    display: flex; align-items: center; gap: 12px;
+    background: var(--sidebar); color: #fff;
+    border: 1px solid rgba(235,220,251,.14); border-radius: 16px;
+    padding: 12px 14px 12px 18px;
+    box-shadow: 0 20px 50px rgba(36,27,53,.34);
+    transform: translateX(-50%);
+    animation: nudgeUp .5s var(--ease-out);
+  }
+  .nudge[hidden] { display: none; }
+  .nudge > span { font-size: 13.5px; font-weight: 500; color: var(--sidebar-ink); }
+  .nudge .btn { margin-left: auto; padding: 9px 16px; border-radius: 999px; white-space: nowrap; }
+  .nudge-x { background: transparent; border: none; color: var(--sidebar-ink); font-size: 20px; line-height: 1; cursor: pointer; padding: 0 2px; }
+  .nudge-x:hover { color: #fff; }
+  @keyframes nudgeUp { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
   /* ============ Restaurant Intelligence ============ */
   .intel-screen { padding: 84px 0 60px; position: relative; }
   .intel-screen[hidden] { display: none; }
@@ -670,7 +726,7 @@
   .gate-alt { text-align: center; margin-top: 14px; font-size: 12.5px; }
 
   @media print {
-    header, footer, .aurora, .marquee-band, .gate-overlay, .report-actions, .nav-links { display: none !important; }
+    header, footer, .aurora, .marquee-band, .gate-overlay, .report-actions, .nav-links, .nudge { display: none !important; }
     body { background: #fff; }
     .gated { filter: none !important; }
     .intel-screen { padding: 0; }
@@ -693,6 +749,10 @@
     .nav-links a.hide-m { display: none; }
     .hero { padding: 64px 0 52px; }
     .hero-ctas { flex-direction: column; align-items: center; }
+    .hero-widget { flex-wrap: wrap; border-radius: 20px; padding: 12px; }
+    .hero-widget input { width: 100%; padding: 6px 4px; }
+    .hero-widget .btn { width: 100%; }
+    .nudge { flex-wrap: wrap; }
     .scan-grid { grid-template-columns: 1fr; }
     .score-grid { grid-template-columns: repeat(2, 1fr); }
     .rev-grid { grid-template-columns: 1fr; }
@@ -721,7 +781,7 @@
       <a href="#intelligence" data-nav="intelligence">Intelligence</a>
       <a href="#pricing" data-nav="pricing">Pricing</a>
       <a href="#login" data-nav="login">Log in</a>
-      <a href="#pricing" class="btn btn-primary" style="padding:10px 20px;">Start free</a>
+      <a href="#pricing" id="nav-cta" class="btn btn-primary" style="padding:10px 20px;">Start free</a>
     </nav>
   </div>
 </header>
@@ -736,10 +796,15 @@
       <p class="lead reveal" style="--d:.16s">Competitors sell marketing, ordering, and CRM as three separate subscriptions.
         RestroPulse puts AI-powered social content, your own online storefront, and
         customer growth tools in a single elegant dashboard.</p>
-      <div class="hero-ctas reveal" style="--d:.24s">
-        <a href="#pricing" class="btn btn-primary">Start free — no card needed</a>
-        <a id="demo-link" href="#" class="btn btn-ghost" target="_blank" rel="noopener">See the live demo →</a>
-      </div>
+      <form class="hero-widget reveal" id="hero-scan-form" style="--d:.24s" autocomplete="off">
+        <span class="hw-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg></span>
+        <input id="hero-q" type="text" placeholder="Find your restaurant name…" aria-label="Find your restaurant" />
+        <button type="submit" class="btn btn-primary">Get my AI report →</button>
+        <div id="hero-ac" class="intel-ac"></div>
+      </form>
+      <p class="hero-links reveal" style="--d:.28s">
+        <a href="#pricing">Start free</a> · <a id="demo-link" href="#" target="_blank" rel="noopener">See the live demo</a>
+      </p>
       <p class="hero-note reveal" style="--d:.3s">Set up in under 10 minutes · Cancel anytime</p>
 
       <!-- Dashboard preview -->
@@ -764,33 +829,18 @@
         </div>
 
         <div class="preview" aria-hidden="true">
-          <img class="dash-img" data-asset="dashboard" alt="RestroPulse dashboard" />
-          <div class="preview-inner">
-            <div class="preview-rail">
-              <span class="wordmark">Restro<b>pulse</b></span>
-              <div class="rail-item active">◈ Dashboard</div>
-              <div class="rail-item">✦ Content</div>
-              <div class="rail-item">▤ Ordering</div>
-              <div class="rail-item">◔ Intelligence</div>
-              <div class="rail-item">▣ Website</div>
+          <div class="loss-mock">
+            <div class="loss-head"><span class="lm-dot"></span> Who's beating you on Google — Indiranagar</div>
+            <div class="lm-list">
+              <div class="lm-row"><span class="lm-rk">1</span><span class="lm-nm">Toit Brewpub</span><span class="lm-rt">4.7 ★</span></div>
+              <div class="lm-row"><span class="lm-rk">2</span><span class="lm-nm">The Fatty Bao</span><span class="lm-rt">4.6 ★</span></div>
+              <div class="lm-row"><span class="lm-rk">3</span><span class="lm-nm">Mahesh Lunch Home</span><span class="lm-rt">4.4 ★</span></div>
+              <div class="lm-row you"><span class="lm-rk">10</span><span class="lm-nm">Your restaurant</span><span class="lm-rt">4.1 ★</span></div>
             </div>
-            <div class="preview-main">
-              <div class="ptitle">Good evening, Spice Garden</div>
-              <div class="psub">Here's how your restaurant is doing today</div>
-              <div class="kpis">
-                <div class="kpi"><div class="label">Orders today</div><div class="num" data-count="47">0</div><div class="delta">+12%</div></div>
-                <div class="kpi"><div class="label">Revenue</div><div class="num" data-count="18240" data-prefix="₹">₹0</div><div class="delta">+8%</div></div>
-                <div class="kpi"><div class="label">Posts scheduled</div><div class="num" data-count="6">0</div><div class="delta">this week</div></div>
-                <div class="kpi"><div class="label">Repeat guests</div><div class="num" data-count="31" data-suffix="%">0%</div><div class="delta">+4%</div></div>
-              </div>
-              <div class="spark" id="spark">
-                <span class="label">7-day revenue</span>
-                <div class="spark-bars">
-                  <i style="--i:0; height:38%"></i><i style="--i:1; height:52%"></i><i style="--i:2; height:44%"></i>
-                  <i style="--i:3; height:66%"></i><i style="--i:4; height:58%"></i><i style="--i:5; height:82%"></i>
-                  <i style="--i:6; height:100%"></i>
-                </div>
-              </div>
+            <div class="lm-banner">
+              <div class="lm-loss">You're losing <b data-count="38000" data-prefix="₹">₹0</b> a month until you fix these issues</div>
+              <div class="lm-issue"><span class="lm-ic">!</span> No description on your Google profile</div>
+              <div class="lm-issue"><span class="lm-ic">!</span> Only 12 photos — top-ranked spots have 100+</div>
             </div>
           </div>
         </div>
@@ -856,7 +906,7 @@
             <li>WhatsApp nudges &amp; discount campaigns</li>
             <li>Campaign ROI, down to the rupee</li>
           </ul>
-          <p class="soon" style="margin-top:14px;"><a href="#intelligence" style="color:var(--primary-strong);">New: Restaurant Intelligence scanner →</a> · Website Design coming soon</p>
+          <p class="soon" style="margin-top:14px;"><a href="#intelligence" style="color:var(--primary-strong);">Run a free visibility scan →</a> · Website Design coming soon</p>
         </div>
       </div>
     </div>
@@ -898,6 +948,7 @@
              RestroPulse is the only place where a WhatsApp campaign knows what a guest
              ordered last month.</p>
           <a href="#pricing" class="btn btn-primary">See pricing</a>
+          <a href="#intelligence" style="color:var(--info); font-weight:600; font-size:14px; margin-left:16px;">Run a free visibility scan →</a>
         </div>
         <ul class="tick-list">
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2FB37F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> One dashboard instead of three subscriptions</li>
@@ -1073,6 +1124,13 @@
   </div>
 </main>
 
+<!-- Persistent nudge (shown after the hero widget scrolls out of view on #home) -->
+<div class="nudge" id="nudge" hidden>
+  <span>See what's holding your restaurant back</span>
+  <a href="#intelligence" class="btn btn-primary">Get my AI report</a>
+  <button class="nudge-x" id="nudge-x" aria-label="Dismiss">×</button>
+</div>
+
 <script>
 /* ==============================================================
    RP_CONFIG — everything editable lives here.
@@ -1200,6 +1258,8 @@ function route() {
   window.scrollTo(0, 0);
   if (page === "pricing") requestAnimationFrame(positionSlider);
   if (page === "intelligence") intelRoute(segs);
+  updateNavCta();
+  nudgeUpdate();
   observeReveals();
 }
 window.addEventListener("hashchange", route);
@@ -1333,7 +1393,7 @@ const el = id => document.getElementById(id);
 const clampN = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 const stars = r => "★★★★★☆☆☆☆☆".slice(5 - Math.round(r), 10 - Math.round(r));
 
-const intel = { selected: null, scanId: null, restaurant: null, report: null, unlocked: false, source: "intelligence-gate", scanReady: false };
+const intel = { selected: null, scanId: null, restaurant: null, report: null, unlocked: false, source: "intelligence-gate", scanReady: false, autoStart: false, scanRanSession: false };
 
 /* Embedded fixture — one sample restaurant, for API-down demo mode. */
 const INTEL_FIXTURE = {
@@ -1454,6 +1514,8 @@ async function fetchScan(slug, avgSpend) {
 
 async function startScan() {
   if (!intel.selected) return;
+  intel.scanRanSession = true; // suppress the nudge for the rest of the session
+  nudgeUpdate();
   const spend = clampN(parseInt(el("intel-spend").value, 10) || 600, 50, 5000);
   intel.scanReady = false;
   intelShow("scanning");
@@ -1556,6 +1618,84 @@ el("gate-form").addEventListener("submit", async function (e) {
 el("intel-start").addEventListener("click", startScan);
 el("rep-print").addEventListener("click", () => window.print());
 
+/* ---- Hero report widget → hands off to the scanner (restaurant pre-selected) ---- */
+async function acSearch(q) {
+  let rows = [];
+  try {
+    const r = await fetch(API_BASE + "/api/directory/search?q=" + encodeURIComponent(q));
+    if (r.ok) { const j = await r.json(); rows = (j && j.data) || []; }
+  } catch (e) { /* offline */ }
+  if (!rows.length && "spice garden indiranagar".includes(q.toLowerCase())) rows = [INTEL_FIXTURE.restaurant];
+  return rows;
+}
+function renderAc(box, rows, onPick) {
+  box.innerHTML = rows.map(r => `
+    <div class="intel-ac-item" data-slug="${r.slug}">
+      <div><div class="nm">${r.name}</div><div class="mt">${r.category} · ${r.area}, ${r.city}</div></div>
+      <div class="rt">${(+r.rating).toFixed(1)} ★ · ${r.reviewCount.toLocaleString("en-IN")}</div>
+    </div>`).join("") || `<div class="intel-ac-item"><div class="mt">No matches — try "Truffles" or "Koramangala".</div></div>`;
+  box.classList.add("open");
+  box.querySelectorAll("[data-slug]").forEach(node => {
+    node.addEventListener("click", () => { const r = rows.find(x => x.slug === node.dataset.slug); if (r) onPick(r); });
+  });
+}
+function heroPick(r) {
+  intel.selected = r; intel.autoStart = true;
+  const q = el("hero-q"); if (q) q.value = r.name;
+  el("hero-ac").classList.remove("open");
+  const seg = (location.hash || "").replace(/^#/, "").split("/")[0];
+  if (seg === "intelligence") { intel.autoStart = false; startScan(); }
+  else location.hash = "intelligence";
+}
+let heroItems = [], heroTimer = null;
+(function () {
+  const q = el("hero-q");
+  if (!q) return;
+  q.addEventListener("input", function () {
+    const v = this.value.trim(); clearTimeout(heroTimer);
+    if (v.length < 2) { el("hero-ac").classList.remove("open"); return; }
+    heroTimer = setTimeout(async () => { heroItems = await acSearch(v); renderAc(el("hero-ac"), heroItems, heroPick); }, 180);
+  });
+  el("hero-scan-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const v = q.value.trim(); if (!v) return;
+    let r = heroItems.find(x => x.name.toLowerCase() === v.toLowerCase()) || heroItems[0];
+    if (!r) { const rows = await acSearch(v); r = rows[0]; }
+    if (r) heroPick(r);
+  });
+  document.addEventListener("click", e => {
+    if (!e.target.closest("#hero-ac") && e.target.id !== "hero-q") { const b = el("hero-ac"); if (b) b.classList.remove("open"); }
+  });
+})();
+
+/* ---- Nav CTA swap + persistent nudge ---- */
+function updateNavCta() {
+  const cta = el("nav-cta"); if (!cta) return;
+  const seg = (location.hash || "#home").replace(/^#/, "").split("/")[0] || "home";
+  if (seg === "home") { cta.textContent = "Get my AI report"; cta.setAttribute("href", "#intelligence"); }
+  else { cta.textContent = "Start free"; cta.setAttribute("href", "#pricing"); }
+}
+const NUDGE_KEY = "rp_nudge_dismissed";
+let heroVisible = true;
+function nudgeDismissed() {
+  let t = 0; try { t = +localStorage.getItem(NUDGE_KEY) || 0; } catch (e) { }
+  return (Date.now() - t) < 7 * 864e5; // 7 days
+}
+function nudgeUpdate() {
+  const n = el("nudge"); if (!n) return;
+  const seg = (location.hash || "#home").replace(/^#/, "").split("/")[0] || "home";
+  const show = seg === "home" && !heroVisible && !nudgeDismissed() && !intel.scanRanSession;
+  n.hidden = !show;
+}
+(function () {
+  const hw = el("hero-scan-form");
+  if (hw && "IntersectionObserver" in window) {
+    new IntersectionObserver(es => { es.forEach(e => { heroVisible = e.isIntersecting; nudgeUpdate(); }); }, { threshold: 0 }).observe(hw);
+  }
+  const x = el("nudge-x");
+  if (x) x.addEventListener("click", () => { try { localStorage.setItem(NUDGE_KEY, String(Date.now())); } catch (e) { } nudgeUpdate(); });
+})();
+
 /* ---- Deep-link / reset routing ---- */
 async function intelRoute(segs) {
   if (segs[1] === "report" && segs[2]) {
@@ -1567,6 +1707,9 @@ async function intelRoute(segs) {
       intel.scanId = j.data.scanId; intel.restaurant = j.data.restaurant; intel.report = j.data.report; intel.unlocked = j.data.unlocked;
       showReport(j.data);
     } catch (e) { intelShow("search"); }
+  } else if (intel.autoStart && intel.selected) {
+    intel.autoStart = false; // arrived from the hero widget → skip the search screen
+    startScan();
   } else {
     intelShow("search");
   }

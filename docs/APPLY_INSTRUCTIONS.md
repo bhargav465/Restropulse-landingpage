@@ -58,20 +58,27 @@ Implement per spec §4, in this order, each with a curl check:
 
 ## 3. Page layer (public/index.html → `pages` collection)
 
-1. Add `#intelligence` to `PAGES` + nav; build the three screens
+1. Rebuild the `#home` hero per spec §2a: report widget as the primary CTA
+   (input + "Get my AI report" capsule, autocomplete wired to
+   `/api/directory/search`), demoted secondary links, and the loss-framing
+   "Who's beating you on Google" mock. Then add the §2b nudges (sticky bar
+   with IntersectionObserver + localStorage dismissal, nav CTA swap,
+   pillar/band links).
+2. Add `#intelligence` to `PAGES` + nav; build the three screens
    (search → scanning → report) per spec §1/§5, Electric Lavender tokens
-   only, reusing existing primitives.
-2. Gate modal + blur/unlock flow; deep-link `#intelligence/report/<scanId>`
+   only, reusing existing primitives. Hero submissions arrive here with the
+   restaurant pre-selected and the scan auto-starting.
+3. Gate modal + blur/unlock flow; deep-link `#intelligence/report/<scanId>`
    (extend the hash router to tolerate the suffix).
-3. Embedded fixture fallback for one sample restaurant (API-down demo mode).
-4. Print stylesheet + "Download report" button.
+4. Embedded fixture fallback for one sample restaurant (API-down demo mode).
+5. Print stylesheet + "Download report" button.
 
 ## 4. Gates before every commit
 
 - `node --check` all server files; page JS extracted + `node --check`.
 - Server up with Atlas: all 5 curl checks green; with Atlas blocked:
   page still renders, APIs return 503 envelope.
-- Manual pass of spec §6 acceptance list (1–8), desktop + 380 px width.
+- Manual pass of spec §6 acceptance list (0–8), desktop + 380 px width.
 - Conventional commits (`feat(intel): …`); mark guesses `ASSUMPTION:` in
   the PR description.
 

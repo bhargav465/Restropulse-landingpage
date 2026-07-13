@@ -47,15 +47,51 @@ Reference flow (replicate the shape, NOT the branding):
      checkbox, T&C consent checkbox, submit button, secondary CTA
      "Book a free strategy call".
 
-## 2. Where it lives
+## 2. Where it lives — the scanner is the FRONT DOOR of the page
 
 The site is a single-file SPA with hash routing (`#home / #pricing / #login`)
 served from the MongoDB `pages` collection on Vercel. Add one route:
-**`#intelligence`**, linked from the nav ("Intelligence" item), the hero, and
-the Growth pillar's "Coming soon" line (which it replaces). All styling uses
-the existing Electric Lavender tokens — do NOT copy Sous's navy/indigo.
-Reuse: `.aurora`, `.reveal`, `.btn-*`, `.kpi`, card patterns, the toggle
-slider pattern for tabs, and the counter animation for scores.
+**`#intelligence`** — but the entry point is on `#home` itself, following the
+Owner.com pattern: the report widget IS the primary hero CTA, visible the
+moment the page opens, with a persistent nudge as the user scrolls.
+
+### 2a. Hero report widget (replaces the current hero CTA row)
+
+- Directly under the hero headline: a single rounded pill widget —
+  input + gradient `btn-primary` in one capsule (surface bg, `--border`,
+  soft shadow; focus ring `--primary-soft`). This is the FIRST interactive
+  element on the page.
+- Typing ≥ 2 chars shows the same `GET /api/directory/search` autocomplete
+  dropdown as the scanner. Picking a result (or submitting) routes to
+  `#intelligence` with the restaurant pre-selected and the scan already
+  starting — zero re-entry of data.
+- The previous "Start free / See the live demo" buttons demote to quiet
+  text links under the widget; the "Set up in under 10 minutes" note stays.
+- Loss-framing proof under the widget (Owner-style mock, built from existing
+  card primitives, no images): a mini "Who's beating you on Google" card —
+  3 competitor rows + "Your restaurant · #10" row (`--primary-soft`
+  highlight), then a banner "You're losing ₹38,000 a month until you fix
+  these issues" with 2 issue rows (`--warning` icons). Reuses `.kpi`/list
+  styles inside the existing `.preview` dark frame; `[SAMPLE]` data, animated
+  by the existing counter/reveal utilities.
+
+### 2b. Persistent nudge
+
+- **Sticky nudge bar**: when the hero widget scrolls out of view
+  (IntersectionObserver on the widget), a slim bar appears: "See what's
+  holding your restaurant back → [Get my AI report]". Dismissible (×);
+  dismissal remembered in `localStorage` for 7 days; never shown on
+  `#intelligence` itself or after a scan has run this session.
+- **Nav CTA swap**: the nav's "Start free" button becomes "Get my AI report"
+  on `#home` (pricing keeps "Start free").
+- Secondary entries: Growth pillar's line becomes a live "Run a free
+  visibility scan →" link; the dark band CTA gains the same link.
+- One dismissible element max on screen — no popups/exit-intent modals.
+
+All styling uses the existing Electric Lavender tokens — do NOT copy Sous's
+navy/indigo or Owner's green/black. Reuse: `.aurora`, `.reveal`, `.btn-*`,
+`.kpi`, card patterns, the toggle slider pattern for tabs, and the counter
+animation for scores.
 
 ## 3. Data model (MongoDB, additive — nothing existing changes)
 
@@ -127,6 +163,10 @@ only via `seed/`.
 
 ## 6. Acceptance criteria
 
+0. Opening the site cold shows the hero report widget as the first CTA;
+   typing a seeded restaurant name and submitting lands in a running scan
+   with no re-typing. Scrolling past the hero shows the sticky nudge;
+   dismissing it persists across reloads (7 days).
 1. `#intelligence` reachable from nav; search returns seeded restaurants.
 2. Scan theatre runs ≤ 25 s; report renders all 7 sections.
 3. Report is blurred until the gate form passes validation; submission
