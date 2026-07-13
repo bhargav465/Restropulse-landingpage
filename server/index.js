@@ -6,8 +6,13 @@ const { connect } = require("./db");
 const app = express();
 const PORT = process.env.PORT || 3005;
 
+app.use(express.json());
+
 /* ---------- Static landing page ---------- */
 app.use(express.static(path.join(__dirname, "..", "public")));
+
+/* ---------- Restaurant Intelligence API (server/intelligence.js) ---------- */
+app.use(require("./intelligence").router);
 
 /* ---------- API: plans + settings (MongoDB) ----------
    Response envelope matches RestroPulse convention: { success, data | error }.

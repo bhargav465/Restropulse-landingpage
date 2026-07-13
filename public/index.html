@@ -555,6 +555,128 @@
   .preview.has-shot .dash-img { display: block; }
   .preview.has-shot .preview-inner { display: none; }
 
+  /* ============ Restaurant Intelligence ============ */
+  .intel-screen { padding: 84px 0 60px; position: relative; }
+  .intel-screen[hidden] { display: none; }
+  .intel-searchbox {
+    max-width: 640px; margin: 0 auto; position: relative;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 22px; padding: 26px; box-shadow: 0 18px 50px rgba(36,27,53,0.08);
+  }
+  .intel-field { position: relative; margin-bottom: 16px; }
+  .intel-field label { display:block; margin-bottom: 7px; }
+  .intel-field input {
+    width: 100%; padding: 13px 15px; font-size: 15px; font-family: var(--font-body);
+    color: var(--ink); background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; outline: none; transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  .intel-field input:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 4px var(--primary-soft); }
+  .intel-ac {
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 20; margin-top: 6px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(36,27,53,0.16); overflow: hidden; display: none;
+  }
+  .intel-ac.open { display: block; }
+  .intel-ac-item { display: flex; align-items: center; gap: 12px; padding: 11px 15px; cursor: pointer; transition: background .15s; }
+  .intel-ac-item:hover, .intel-ac-item.hi { background: var(--primary-soft); }
+  .intel-ac-item .nm { font-weight: 600; font-size: 14px; }
+  .intel-ac-item .mt { font-size: 12px; color: var(--muted); }
+  .intel-ac-item .rt { margin-left: auto; font-size: 12.5px; font-weight: 600; color: var(--warning); white-space: nowrap; }
+  .intel-selected { font-size: 13px; color: var(--muted); margin: 4px 0 16px; min-height: 18px; }
+  .intel-selected b { color: var(--primary-strong); }
+
+  /* Scanning */
+  .scan-grid { display: grid; grid-template-columns: 280px 1fr; gap: 22px; max-width: 900px; margin: 0 auto; }
+  .scan-rail { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 22px; }
+  .scan-step { display: flex; align-items: center; gap: 12px; padding: 11px 0; color: var(--muted); font-size: 14px; font-weight: 500; transition: color .3s; }
+  .scan-step .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); flex: none; display: flex; align-items: center; justify-content: center; transition: all .3s; }
+  .scan-step.doing { color: var(--ink); }
+  .scan-step.doing .dot { border-color: var(--primary); border-top-color: transparent; animation: spin .7s linear infinite; }
+  .scan-step.done { color: var(--ink); }
+  .scan-step.done .dot { border-color: var(--success); background: var(--success); }
+  .scan-step.done .dot svg { display: block; }
+  .scan-step .dot svg { display: none; }
+  .scan-progress { height: 8px; border-radius: 999px; background: var(--primary-soft); overflow: hidden; margin-top: 14px; }
+  .scan-progress i { display: block; height: 100%; width: 0%; background: var(--grad); transition: width .4s var(--ease-out); }
+  .scan-eta { font-size: 12.5px; color: var(--muted); margin-top: 10px; text-align: center; }
+  .scan-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+  .scan-card .rc-cat { font-size: 12px; }
+  .scan-card h3 { font-size: 22px; margin: 6px 0 4px; }
+  .scan-card .rc-meta { font-size: 13.5px; color: var(--muted); }
+  .rc-stars { color: var(--warning); letter-spacing: 1px; }
+  .scan-card .rc-desc { font-size: 13.5px; color: var(--ink); margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .scan-emailme { margin-top: 18px; }
+
+  /* Report */
+  .report-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; max-width: 940px; margin: 0 auto 26px; flex-wrap: wrap; }
+  .report-head h2 { margin-bottom: 4px; }
+  .report-id { font-size: 13.5px; color: var(--muted); }
+  .report-id b { color: var(--ink); }
+  .report-body { max-width: 940px; margin: 0 auto; position: relative; }
+  .report-sec { margin-bottom: 26px; }
+  .report-sec h3 { font-size: 15px; margin-bottom: 14px; }
+  .score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .score-grid .kpi { text-align: left; }
+  .score-grid .num.good { color: var(--success); }
+  .score-grid .num.warn { color: var(--warning); }
+  .score-grid .num.bad { color: var(--danger); }
+  .score-grid .num small { font-size: 15px; color: var(--muted); font-weight: 500; }
+  .comp-list { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .comp-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .comp-row:last-child { border-bottom: none; }
+  .comp-row .rk { width: 26px; height: 26px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 700; flex: none; }
+  .comp-row .cn { font-weight: 500; }
+  .comp-row .cr { margin-left: auto; color: var(--warning); font-weight: 600; font-size: 13px; white-space: nowrap; }
+  .comp-row.you { background: var(--primary-soft); border-left: 3px solid var(--primary); }
+  .comp-row.you .cn { font-weight: 700; color: var(--primary-strong); }
+  .comp-row.you .rk { background: var(--grad); color: #fff; border-color: transparent; }
+  .rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .rev-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
+  .rev-card .lab { font-size: 11px; }
+  .rev-card .val { font-size: 26px; font-weight: 700; font-family: var(--font-display); color: var(--primary-strong); font-variant-numeric: tabular-nums; }
+  .rev-foot { font-size: 12px; color: var(--muted); margin-top: 12px; }
+  .check-list, .todo-list, .ai-list { list-style: none; }
+  .check-row { display: flex; align-items: center; gap: 12px; padding: 11px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; font-size: 14px; }
+  .check-row .ic { width: 22px; height: 22px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; }
+  .check-row.ok .ic { background: rgba(47,179,127,.14); color: var(--success); }
+  .check-row.no .ic { background: rgba(224,91,114,.14); color: var(--danger); }
+  .check-row.no { color: var(--ink); }
+  .todo-row { display: flex; gap: 12px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; font-size: 13.5px; }
+  .todo-row .n { width: 24px; height: 24px; border-radius: 8px; background: var(--primary-soft); color: var(--primary-strong); font-weight: 700; font-size: 12.5px; display: flex; align-items: center; justify-content: center; flex: none; }
+  .ai-row { display: flex; align-items: center; gap: 12px; padding: 11px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; font-size: 13.5px; }
+  .ai-row .tag { margin-left: auto; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+  .ai-row.found .tag { color: var(--success); }
+  .ai-row.miss .tag { color: var(--danger); }
+
+  /* Gate + blur */
+  .gated { filter: blur(7px); pointer-events: none; user-select: none; transition: filter .6s var(--ease-out); }
+  .gate-overlay {
+    position: absolute; left: 0; right: 0; top: 200px; bottom: 0; z-index: 30;
+    display: flex; align-items: flex-start; justify-content: center; padding-top: 40px;
+    background: linear-gradient(180deg, rgba(250,248,255,0) 0%, var(--bg) 22%);
+  }
+  .gate-overlay[hidden] { display: none; }
+  .gate-card {
+    width: 100%; max-width: 440px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 22px; padding: 34px 32px;
+    box-shadow: 0 30px 80px -20px rgba(36,27,53,0.22); position: sticky; top: 90px;
+  }
+  .gate-card h3 { font-size: 19px; margin-bottom: 6px; }
+  .gate-card .sub { font-size: 13.5px; color: var(--muted); margin-bottom: 22px; }
+  .gate-card .field { margin-bottom: 14px; }
+  .gate-check { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--muted); margin-bottom: 12px; cursor: pointer; }
+  .gate-check input { margin-top: 2px; }
+  .gate-err { color: var(--danger); font-size: 12.5px; margin: -4px 0 12px; display: none; }
+  .gate-alt { text-align: center; margin-top: 14px; font-size: 12.5px; }
+
+  @media print {
+    header, footer, .aurora, .marquee-band, .gate-overlay, .report-actions, .nav-links { display: none !important; }
+    body { background: #fff; }
+    .gated { filter: none !important; }
+    .intel-screen { padding: 0; }
+    .kpi, .comp-list, .rev-card, .check-row, .todo-row, .ai-row { box-shadow: none; }
+  }
+
   /* ============ Responsive ============ */
   @media (max-width: 960px) {
     h1 { font-size: 36px; }
@@ -571,6 +693,10 @@
     .nav-links a.hide-m { display: none; }
     .hero { padding: 64px 0 52px; }
     .hero-ctas { flex-direction: column; align-items: center; }
+    .scan-grid { grid-template-columns: 1fr; }
+    .score-grid { grid-template-columns: repeat(2, 1fr); }
+    .rev-grid { grid-template-columns: 1fr; }
+    .gate-card { max-width: none; }
   }
 
   /* ============ Reduced motion ============ */
@@ -592,6 +718,7 @@
     <a href="#home" class="wordmark">Restro<b>pulse</b><span class="dot"></span></a>
     <nav class="nav-links">
       <a href="#home" data-nav="home" class="hide-m">Product</a>
+      <a href="#intelligence" data-nav="intelligence">Intelligence</a>
       <a href="#pricing" data-nav="pricing">Pricing</a>
       <a href="#login" data-nav="login">Log in</a>
       <a href="#pricing" class="btn btn-primary" style="padding:10px 20px;">Start free</a>
@@ -729,7 +856,7 @@
             <li>WhatsApp nudges &amp; discount campaigns</li>
             <li>Campaign ROI, down to the rupee</li>
           </ul>
-          <p class="soon" style="margin-top:14px;">Coming soon: Restaurant Intelligence · Website Design</p>
+          <p class="soon" style="margin-top:14px;"><a href="#intelligence" style="color:var(--primary-strong);">New: Restaurant Intelligence scanner →</a> · Website Design coming soon</p>
         </div>
       </div>
     </div>
@@ -837,6 +964,112 @@
       <p class="auth-alt">New to RestroPulse? <a href="#pricing">Start your free trial</a></p>
       <p class="auth-demo">Demo mode — any email &amp; password opens the live admin demo.</p>
     </form>
+  </div>
+</main>
+
+<!-- ==================== INTELLIGENCE ==================== -->
+<main id="page-intelligence" class="page">
+  <div class="wrap">
+    <!-- Screen 1: search -->
+    <section id="intel-search" class="intel-screen">
+      <div class="aurora"><i></i><i></i><i></i></div>
+      <div class="sec-head reveal in">
+        <span class="label">Restaurant Intelligence</span>
+        <h2>Am I visible on <span class="grad-text">Google &amp; ChatGPT?</span></h2>
+        <p class="lead">Find your restaurant, run a 20-second visibility scan, and see exactly
+          where you're losing guests to the competitors next door.</p>
+      </div>
+      <div class="intel-searchbox reveal in">
+        <div class="intel-field">
+          <label class="label" for="intel-q">Your restaurant</label>
+          <input id="intel-q" type="text" autocomplete="off" placeholder="Search by name or area…" />
+          <div id="intel-ac" class="intel-ac"></div>
+        </div>
+        <p class="intel-selected" id="intel-selected"></p>
+        <div class="intel-field">
+          <label class="label" for="intel-spend">Avg revenue per guest (₹)</label>
+          <input id="intel-spend" type="number" min="50" max="5000" step="50" value="600" />
+        </div>
+        <button id="intel-start" class="btn btn-primary btn-block" disabled>Scan my restaurant</button>
+      </div>
+    </section>
+
+    <!-- Screen 2: scanning -->
+    <section id="intel-scanning" class="intel-screen" hidden>
+      <div class="scan-grid">
+        <div class="scan-rail">
+          <span class="label" style="display:block;margin-bottom:8px;">Scanning</span>
+          <div id="scan-steps"></div>
+          <div class="scan-progress"><i id="scan-bar"></i></div>
+          <p class="scan-eta" id="scan-eta">Starting…</p>
+          <button id="scan-emailme" class="btn btn-ghost btn-block scan-emailme">Email me the report</button>
+        </div>
+        <div class="scan-card" id="scan-card"><!-- restaurant card --></div>
+      </div>
+    </section>
+
+    <!-- Screen 3: report -->
+    <section id="intel-report" class="intel-screen" hidden>
+      <div class="report-head">
+        <div>
+          <span class="label">Visibility Report</span>
+          <h2 id="rep-name">—</h2>
+          <p class="report-id"><span id="rep-meta"></span> · <span id="rep-date"></span></p>
+        </div>
+        <div class="report-actions">
+          <button id="rep-print" class="btn btn-ghost">Download report</button>
+        </div>
+      </div>
+
+      <div class="report-body">
+        <div id="rep-gatewrap">
+          <div class="report-sec">
+            <div class="score-grid" id="rep-scores"></div>
+          </div>
+
+          <!-- everything below is gated until the form is submitted -->
+          <div id="rep-gated">
+            <div class="report-sec">
+              <h3 id="rep-comp-head">Competitor ranking</h3>
+              <div class="comp-list" id="rep-comp"></div>
+            </div>
+            <div class="report-sec">
+              <h3>Expected revenue growth</h3>
+              <div class="rev-grid" id="rep-rev"></div>
+              <p class="rev-foot" id="rep-rev-foot"></p>
+            </div>
+            <div class="report-sec">
+              <h3>Profile checklist</h3>
+              <ul class="check-list" id="rep-check"></ul>
+            </div>
+            <div class="report-sec">
+              <h3>Your 5-step to-do list</h3>
+              <ul class="todo-list" id="rep-todo"></ul>
+            </div>
+            <div class="report-sec">
+              <h3 id="rep-ai-head">AI visibility test</h3>
+              <ul class="ai-list" id="rep-ai"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- gate -->
+        <div class="gate-overlay" id="gate-overlay">
+          <form class="gate-card" id="gate-form" novalidate>
+            <h3>View your full report</h3>
+            <p class="sub">Enter your details for instant access to your competitor ranking, revenue projection, and to-do list.</p>
+            <div class="field"><label class="label" for="g-name">Name</label><input id="g-name" type="text" autocomplete="name" placeholder="Your name" /></div>
+            <div class="field"><label class="label" for="g-phone">Phone</label><input id="g-phone" type="tel" autocomplete="tel" placeholder="Phone number" /></div>
+            <div class="field"><label class="label" for="g-email">Email</label><input id="g-email" type="email" autocomplete="email" placeholder="you@restaurant.com" /></div>
+            <label class="gate-check"><input id="g-multi" type="checkbox" /> I have multiple locations</label>
+            <label class="gate-check"><input id="g-consent" type="checkbox" /> I agree to be contacted about my report and RestroPulse (T&amp;C).</label>
+            <p class="gate-err" id="gate-err">Please complete the required fields.</p>
+            <button type="submit" class="btn btn-primary btn-block" id="gate-submit" disabled>Unlock my report</button>
+            <p class="gate-alt"><a href="#pricing">Book a free strategy call</a></p>
+          </form>
+        </div>
+      </div>
+    </section>
   </div>
 </main>
 
@@ -952,11 +1185,12 @@ function setBilling(mode) {
 }
 
 /* ---------- Hash router ---------- */
-const PAGES = ["home", "pricing", "login"];
+const PAGES = ["home", "pricing", "login", "intelligence"];
 
 function route() {
-  const hash = (location.hash || "#home").replace("#", "");
-  const page = PAGES.includes(hash) ? hash : "home";
+  const raw = (location.hash || "#home").replace(/^#/, "");
+  const segs = raw.split("/");
+  const page = PAGES.includes(segs[0]) ? segs[0] : "home";
   PAGES.forEach(p => {
     document.getElementById("page-" + p).classList.toggle("visible", p === page);
   });
@@ -965,6 +1199,7 @@ function route() {
   });
   window.scrollTo(0, 0);
   if (page === "pricing") requestAnimationFrame(positionSlider);
+  if (page === "intelligence") intelRoute(segs);
   observeReveals();
 }
 window.addEventListener("hashchange", route);
@@ -1040,6 +1275,14 @@ document.getElementById("login-form").addEventListener("submit", function (e) {
   const btn = document.getElementById("login-btn");
   btn.innerHTML = '<span class="spinner"></span> Signing in…';
   btn.disabled = true;
+  /* Instrument the demo login: store email + timestamp ONLY (never the
+     password). Fire-and-forget so it never blocks or breaks the redirect. */
+  try {
+    fetch(API_BASE + "/api/events/login", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }), keepalive: true
+    }).catch(function () {});
+  } catch (e) { /* ignore */ }
   /* Demo mode: any credentials open the live admin demo.
      Real API: POST /api/auth/login → store JWT → redirect to app. */
   setTimeout(() => { window.location.href = RP_CONFIG.adminDemoUrl; }, 800);
@@ -1079,6 +1322,254 @@ function hydrateAssets() {
     };
     probe.src = API_BASE + "/api/assets/" + img.dataset.asset;
   });
+}
+
+/* ==============================================================
+   Restaurant Intelligence (spec §1/§5). Talks to the API under
+   API_BASE; falls back to an embedded fixture when the API is down
+   (same demo-parity pattern as RP_CONFIG).
+   ============================================================== */
+const el = id => document.getElementById(id);
+const clampN = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+const stars = r => "★★★★★☆☆☆☆☆".slice(5 - Math.round(r), 10 - Math.round(r));
+
+const intel = { selected: null, scanId: null, restaurant: null, report: null, unlocked: false, source: "intelligence-gate", scanReady: false };
+
+/* Embedded fixture — one sample restaurant, for API-down demo mode. */
+const INTEL_FIXTURE = {
+  scanId: null,
+  restaurant: { slug: "spice-garden-indiranagar", name: "Spice Garden", area: "Indiranagar", city: "Bengaluru", address: "100 Feet Rd, Indiranagar", rating: 4.3, reviewCount: 1871, category: "North Indian", priceLevel: 3, description: "Modern North Indian dining with a lavender-lit courtyard." },
+  report: {
+    scores: { onlineVisibility: { value: 74, band: "good" }, googleSearch: { value: 89, band: "good" }, aiVisibility: { value: 33, band: "bad" }, websiteStrength: { value: 85, band: "good" } },
+    competitors: { position: 3, total: 9, below: 2, ranking: [
+      { slug: "toit-brewpub-indiranagar", name: "Toit Brewpub", rating: 4.7, reviewCount: 2015, score: 95 },
+      { slug: "the-fatty-bao-indiranagar", name: "The Fatty Bao", rating: 4.6, reviewCount: 2140, score: 93 },
+      { slug: "spice-garden-indiranagar", name: "Spice Garden", rating: 4.3, reviewCount: 1871, score: 89 },
+      { slug: "mahesh-lunch-home-indiranagar", name: "Mahesh Lunch Home", rating: 4.4, reviewCount: 1330, score: 82 },
+      { slug: "corner-house-indiranagar", name: "Corner House Ice Cream", rating: 4.5, reviewCount: 980, score: 78 }
+    ] },
+    revenue: { avgSpend: 600, extraGuests: 344, extraRevenueMonth: 206400, extraRevenueYear: 2476800, growthPct: 8 },
+    checklist: [ { label: "Rating 4.0 or higher", pass: true }, { label: "At least 50 reviews", pass: true }, { label: "Description filled in", pass: true }, { label: "Profile attributes added", pass: true } ],
+    todos: [
+      "Post Indiranagar-specific dishes and fresh photos monthly so AI assistants surface you for \"North Indian in Indiranagar\".",
+      "Reply to every recent review within 24 hours — response rate is a ranking signal Toit Brewpub is already using.",
+      "Add your top 3 signature North Indian dishes as menu highlights with photos to win the \"best North Indian in Indiranagar\" query.",
+      "Publish accurate hours, price level, and booking links so first-time diners near Indiranagar convert instead of bouncing.",
+      "Run a monthly offer for Indiranagar regulars and feature it on your profile to lift repeat visits and fresh reviews."
+    ],
+    ai: { queries: [ { query: "Best North Indian in Indiranagar", found: true }, { query: "Where to eat in Indiranagar for a date", found: false }, { query: "Top rated restaurants in Indiranagar", found: false } ], score: 1, total: 3, avgPosition: 3 }
+  }
+};
+
+function intelShow(screen) {
+  ["search", "scanning", "report"].forEach(s => { el("intel-" + s).hidden = s !== screen; });
+}
+
+/* ---- Autocomplete ---- */
+let acItems = [], acTimer = null;
+el("intel-q").addEventListener("input", function () {
+  const q = this.value.trim();
+  clearTimeout(acTimer);
+  if (q.length < 2) { el("intel-ac").classList.remove("open"); return; }
+  acTimer = setTimeout(() => intelSearch(q), 180);
+});
+async function intelSearch(q) {
+  let rows = [];
+  try {
+    const r = await fetch(API_BASE + "/api/directory/search?q=" + encodeURIComponent(q));
+    if (r.ok) { const j = await r.json(); rows = (j && j.data) || []; }
+  } catch (e) { /* offline */ }
+  if (!rows.length && "spice garden indiranagar".includes(q.toLowerCase())) rows = [INTEL_FIXTURE.restaurant];
+  acItems = rows;
+  const box = el("intel-ac");
+  box.innerHTML = rows.map(r => `
+    <div class="intel-ac-item" data-slug="${r.slug}">
+      <div><div class="nm">${r.name}</div><div class="mt">${r.category} · ${r.area}, ${r.city}</div></div>
+      <div class="rt">${(+r.rating).toFixed(1)} ★ · ${r.reviewCount.toLocaleString("en-IN")}</div>
+    </div>`).join("") || `<div class="intel-ac-item"><div class="mt">No matches — try "Truffles" or "Koramangala".</div></div>`;
+  box.classList.add("open");
+  box.querySelectorAll("[data-slug]").forEach(node => {
+    node.addEventListener("click", () => intelSelect(node.dataset.slug));
+  });
+}
+function intelSelect(slug) {
+  const r = acItems.find(x => x.slug === slug);
+  if (!r) return;
+  intel.selected = r;
+  el("intel-q").value = r.name;
+  el("intel-ac").classList.remove("open");
+  el("intel-selected").innerHTML = `Selected: <b>${r.name}</b> — ${r.area}, ${r.city}`;
+  el("intel-start").disabled = false;
+}
+document.addEventListener("click", e => {
+  if (!e.target.closest("#intel-ac") && e.target.id !== "intel-q") el("intel-ac").classList.remove("open");
+});
+
+/* ---- Scan theatre ---- */
+const SCAN_STEPS = ["Business scan", "Review sentiment", "Photo quality", "Local competition", "AI search ranking"];
+const CHECK_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+function renderScanCard(r) {
+  el("scan-card").innerHTML = `
+    <span class="label rc-cat">${r.category} · ${"₹".repeat(r.priceLevel || 1)}</span>
+    <h3>${r.name}</h3>
+    <div class="rc-meta"><span class="rc-stars">${stars(r.rating)}</span> ${(+r.rating).toFixed(1)} · ${r.reviewCount.toLocaleString("en-IN")} reviews</div>
+    <div class="rc-meta">📍 ${r.address || r.area + ", " + r.city}</div>
+    ${r.description ? `<p class="rc-desc">${r.description}</p>` : ""}`;
+}
+function runTheatre() {
+  const host = el("scan-steps");
+  host.innerHTML = SCAN_STEPS.map((s, i) =>
+    `<div class="scan-step" data-i="${i}"><span class="dot">${CHECK_SVG}</span>${s}</div>`).join("");
+  const durations = [2600, 3000, 2800, 3200, 2600];
+  const total = durations.reduce((a, b) => a + b, 0);
+  return new Promise(resolve => {
+    let i = 0, elapsed = 0;
+    const tick = () => {
+      if (i > 0) host.querySelector(`[data-i="${i - 1}"]`).className = "scan-step done";
+      if (i >= SCAN_STEPS.length) {
+        el("scan-bar").style.width = "100%"; el("scan-eta").textContent = "Finalising your report…";
+        return setTimeout(resolve, 500);
+      }
+      host.querySelector(`[data-i="${i}"]`).className = "scan-step doing";
+      el("scan-bar").style.width = Math.round((i / SCAN_STEPS.length) * 100) + "%";
+      const remain = Math.ceil((total - elapsed) / 1000);
+      el("scan-eta").textContent = "~" + remain + " seconds remaining";
+      elapsed += durations[i];
+      setTimeout(tick, durations[i]);
+      i++;
+    };
+    tick();
+  });
+}
+
+async function fetchScan(slug, avgSpend) {
+  const r = await fetch(API_BASE + "/api/intelligence/scan", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ slug, avgSpend })
+  });
+  if (!r.ok) throw new Error("scan failed");
+  const j = await r.json();
+  return j.data;
+}
+
+async function startScan() {
+  if (!intel.selected) return;
+  const spend = clampN(parseInt(el("intel-spend").value, 10) || 600, 50, 5000);
+  intel.scanReady = false;
+  intelShow("scanning");
+  renderScanCard(intel.selected);
+  const scanPromise = fetchScan(intel.selected.slug, spend).catch(() => null);
+  await runTheatre();
+  let data = await scanPromise;
+  if (!data) { // API down → embedded fixture (revenue scaled to the entered spend)
+    data = JSON.parse(JSON.stringify(INTEL_FIXTURE));
+    data.report.revenue.avgSpend = spend;
+    data.report.revenue.extraRevenueMonth = data.report.revenue.extraGuests * spend;
+    data.report.revenue.extraRevenueYear = data.report.revenue.extraRevenueMonth * 12;
+    data.restaurant = intel.selected.name ? Object.assign({}, INTEL_FIXTURE.restaurant, { name: intel.selected.name, slug: intel.selected.slug, area: intel.selected.area, city: intel.selected.city, category: intel.selected.category, rating: intel.selected.rating, reviewCount: intel.selected.reviewCount, priceLevel: intel.selected.priceLevel }) : INTEL_FIXTURE.restaurant;
+  }
+  intel.scanId = data.scanId; intel.restaurant = data.restaurant; intel.report = data.report; intel.unlocked = !!data.unlocked;
+  if (data.scanId) history.replaceState(null, "", "#intelligence/report/" + data.scanId);
+  showReport(data);
+}
+
+/* ---- Report render ---- */
+function showReport(data) {
+  intelShow("report");
+  renderReport(data);
+  applyGate(data.unlocked);
+}
+function renderReport(data) {
+  const r = data.restaurant, rep = data.report;
+  el("rep-name").textContent = r.name;
+  el("rep-meta").textContent = `${r.category} · ${r.area} · ${"₹".repeat(r.priceLevel || 1)} · ${(+r.rating).toFixed(1)}★ (${r.reviewCount.toLocaleString("en-IN")})`;
+  el("rep-date").textContent = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+
+  const s = rep.scores;
+  const cards = [["Online Visibility", s.onlineVisibility], ["Google Search", s.googleSearch], ["AI Visibility", s.aiVisibility], ["Website Strength", s.websiteStrength]];
+  el("rep-scores").innerHTML = cards.map(([lab, v]) =>
+    `<div class="kpi"><div class="label">${lab}</div><div class="num ${v.band}"><span data-count="${v.value}">0</span><small>/100</small></div></div>`).join("");
+
+  const c = rep.competitors;
+  el("rep-comp-head").textContent = c.below > 0
+    ? `You're ranked below ${c.below} competitor${c.below > 1 ? "s" : ""} in ${r.area} — position #${c.position} of ${c.total}`
+    : `You're the top-ranked ${r.category} in ${r.area} — position #${c.position} of ${c.total}`;
+  el("rep-comp").innerHTML = c.ranking.map((x, i) => {
+    const you = x.slug === r.slug;
+    return `<div class="comp-row${you ? " you" : ""}"><span class="rk">${i + 1}</span><span class="cn">${x.name}${you ? " (You)" : ""}</span><span class="cr">${(+x.rating).toFixed(1)} ★ · ${x.reviewCount.toLocaleString("en-IN")}</span></div>`;
+  }).join("");
+
+  const rv = rep.revenue;
+  el("rep-rev").innerHTML = [
+    ["Extra guests / month", rv.extraGuests, "+"],
+    ["Extra revenue / month", rv.extraRevenueMonth, "₹"],
+    ["Extra revenue / year", rv.extraRevenueYear, "₹"]
+  ].map(([lab, val, pre]) =>
+    `<div class="rev-card"><div class="label lab">${lab}</div><div class="val"><span data-count="${val}" data-prefix="${pre}">${pre}0</span></div></div>`).join("");
+  el("rep-rev-foot").textContent = `*Conservative estimate: ${rv.growthPct}% growth based on ₹${rv.avgSpend.toLocaleString("en-IN")}/guest.`;
+
+  el("rep-check").innerHTML = rep.checklist.map(row =>
+    `<li class="check-row ${row.pass ? "ok" : "no"}"><span class="ic">${row.pass ? "✓" : "✕"}</span>${row.label}</li>`).join("");
+  el("rep-todo").innerHTML = rep.todos.map((t, i) =>
+    `<li class="todo-row"><span class="n">${i + 1}</span><span>${t}</span></li>`).join("");
+
+  el("rep-ai-head").textContent = `AI visibility test — found in ${rep.ai.score} of ${rep.ai.total} queries${rep.ai.avgPosition ? " · avg position #" + rep.ai.avgPosition : ""}`;
+  el("rep-ai").innerHTML = rep.ai.queries.map(q =>
+    `<li class="ai-row ${q.found ? "found" : "miss"}"><span>“${q.query}”</span><span class="tag">${q.found ? "Found" : "Not found"}</span></li>`).join("");
+
+  document.querySelectorAll("#intel-report [data-count]").forEach(runCounter);
+}
+function applyGate(unlocked) {
+  intel.unlocked = !!unlocked;
+  el("gate-overlay").hidden = !!unlocked;
+  el("rep-gated").classList.toggle("gated", !unlocked);
+}
+
+/* ---- Gate form ---- */
+el("g-consent").addEventListener("change", function () { el("gate-submit").disabled = !this.checked; });
+el("scan-emailme").addEventListener("click", () => { intel.source = "email-me-report"; });
+el("gate-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const name = el("g-name").value.trim(), email = el("g-email").value.trim();
+  const err = el("gate-err");
+  const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (name.length < 2 || !okEmail || !el("g-consent").checked) {
+    err.textContent = "Please enter your name, a valid email, and accept the T&C.";
+    err.style.display = "block"; return;
+  }
+  err.style.display = "none";
+  const btn = el("gate-submit"); btn.innerHTML = '<span class="spinner"></span> Unlocking…'; btn.disabled = true;
+  const payload = { name, phone: el("g-phone").value.trim(), email, multipleLocations: el("g-multi").checked, consent: true, scanId: intel.scanId, restaurantSlug: intel.restaurant && intel.restaurant.slug, source: intel.source };
+  try {
+    if (intel.scanId) {
+      const r = await fetch(API_BASE + "/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (!r.ok) throw new Error("lead failed");
+    }
+    applyGate(true);
+  } catch (e2) {
+    // Offline/fixture demo — unlock locally so the report is still viewable.
+    applyGate(true);
+  }
+  btn.innerHTML = "Unlocked ✓";
+});
+
+el("intel-start").addEventListener("click", startScan);
+el("rep-print").addEventListener("click", () => window.print());
+
+/* ---- Deep-link / reset routing ---- */
+async function intelRoute(segs) {
+  if (segs[1] === "report" && segs[2]) {
+    if (intel.scanId === segs[2] && intel.report) { showReport({ restaurant: intel.restaurant, report: intel.report, unlocked: intel.unlocked }); return; }
+    try {
+      const r = await fetch(API_BASE + "/api/intelligence/scan/" + encodeURIComponent(segs[2]));
+      if (!r.ok) throw new Error("not found");
+      const j = await r.json();
+      intel.scanId = j.data.scanId; intel.restaurant = j.data.restaurant; intel.report = j.data.report; intel.unlocked = j.data.unlocked;
+      showReport(j.data);
+    } catch (e) { intelShow("search"); }
+  } else {
+    intelShow("search");
+  }
 }
 
 /* ---------- Init ---------- */

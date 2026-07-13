@@ -109,6 +109,37 @@ async function main() {
     }
   }
 
+  // directory — [SAMPLE] restaurant corpus for the Intelligence scanner.
+  // Upsert by slug; never overwrite a real (non-sample) doc. Re-runnable.
+  const directoryPath = path.join(__dirname, "directory.json");
+  if (fs.existsSync(directoryPath)) {
+    const { directory } = JSON.parse(fs.readFileSync(directoryPath, "utf8"));
+    await db.collection("directory").createIndex({ slug: 1 }, { unique: true });
+    await db.collection("directory").createIndex({ area: 1 });
+    let seeded = 0;
+    for (const r of directory || []) {
+      const existing = await db.collection("directory").findOne({ slug: r.slug });
+      if (existing && !existing.sample) {
+        console.log(`- directory ${r.slug}: real doc exists, skipped`);
+        continue;
+      }
+      await db.collection("directory").updateOne(
+        { slug: r.slug },
+        { $set: { ...r, sample: true, updatedAt: new Date() } },
+        { upsert: true }
+      );
+      seeded++;
+    }
+    console.log(`✓ ${seeded} directory restaurants upserted ([SAMPLE])`);
+  }
+
+  // Indexes for the Intelligence collections (created empty; docs arrive at runtime).
+  await db.collection("scans").createIndex({ scanId: 1 }, { unique: true });
+  await db.collection("leads").createIndex({ email: 1, createdAt: -1 });
+  await db.collection("leads").createIndex({ scanId: 1 });
+  await db.collection("login_events").createIndex({ at: -1 });
+  console.log("✓ scans / leads / login_events indexes ensured");
+
   console.log("Done.");
   process.exit(0);
 }
