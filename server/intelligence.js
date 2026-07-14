@@ -264,4 +264,34 @@ router.post("/api/events/login", async (req, res) => {
   }
 });
 
+/* ---------- Deep analysis (RestroGrade format) — real Google Places + Anthropic ----------
+   POST /api/intelligence/analyze { name, city } — runs the live pipeline, stores the
+   rich report in `reports`, returns { reportId, report }. Requires GOOGLE_MAPS_API_KEY
+   + ANTHROPIC_API_KEY (and the @anthropic-ai/sdk dep); lazy-required so the rest of the
+   app runs without them. Slow (~20-90s): live Maps + two Claude calls. */
+router.post("/api/intelligence/analyze", async (req, res) => {
+  try {
+    const { name, city } = req.body || {};
+    if (!name || !city) return res.status(400).json({ success: false, error: "name and city are required" });
+    const { runAndStore } = require("./restrograde");
+    const { reportId, data } = await runAndStore(String(name).trim(), String(city).trim());
+    res.json({ success: true, data: { reportId, report: data } });
+  } catch (err) {
+    const status = err && err.status ? err.status : 500;
+    res.status(status).json({ success: false, error: (err && err.message) || "Analysis failed" });
+  }
+});
+
+// GET /api/intelligence/report/:reportId — fetch a stored deep-analysis report
+router.get("/api/intelligence/report/:reportId", async (req, res) => {
+  try {
+    const db = await connect();
+    const doc = await db.collection("reports").findOne({ reportId: req.params.reportId }, { projection: { _id: 0 } });
+    if (!doc) return res.status(404).json({ success: false, error: "Report not found" });
+    res.json({ success: true, data: doc });
+  } catch (err) {
+    res.status(503).json({ success: false, error: "Database unavailable" });
+  }
+});
+
 module.exports = { router, buildReport };
