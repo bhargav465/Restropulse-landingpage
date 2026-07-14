@@ -302,7 +302,11 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const API_BASE = "";
+/* Deep-scan endpoints route to the persistent Render host when this page is
+   served from Vercel — Vercel Hobby's 60s function cap can't run the ~200s
+   analysis, but Render has no timeout (CORS is open on /api/intelligence). */
+const RENDER_BASE = "https://restropulse-landingpage-c51f.onrender.com";
+const API_BASE = /\.vercel\.app$/.test(location.hostname) ? RENDER_BASE : "";
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 

@@ -8,6 +8,19 @@ const PORT = process.env.PORT || 3005;
 
 app.use(express.json());
 
+/* ---------- CORS for the public Intelligence API ----------
+   Lets the report page be served from another origin (e.g. Vercel) while the
+   long deep-scan runs here. Render has no serverless timeout; Vercel Hobby caps
+   functions at 60s, so the ~200s /api/intelligence/analyze call must hit this
+   host cross-origin. These endpoints are public lead-gen (no cookies/auth). */
+app.use("/api/intelligence", (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
 /* ---------- Static landing page ---------- */
 app.use(express.static(path.join(__dirname, "..", "public")));
 
