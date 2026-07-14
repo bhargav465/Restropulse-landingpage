@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Deep Restaurant Intelligence — RestroPulse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --primary: #B57EDC;
+    --primary-strong: #9D4EDD;
+    --primary-soft: #EBDCFB;
+    --bg: #FAF8FF;
+    --surface: #FFFFFF;
+    --ink: #241B35;
+    --muted: #6E6588;
+    --border: #EAE4F2;
+    --success: #2FB37F;
+    --warning: #E9A23B;
+    --danger: #E05B72;
+    --info: #8B9CF7;
+    --grad: linear-gradient(135deg, #9D4EDD 0%, #B57EDC 55%, #8B9CF7 100%);
+    --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --shadow: 0 1px 2px rgba(36,27,53,.04), 0 8px 30px rgba(157,78,221,.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body); background: var(--bg); color: var(--ink);
+    font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  h1 { font-size: 34px; font-weight: 700; line-height: 1.1; }
+  h2 { font-size: 24px; font-weight: 600; }
+  h3 { font-size: 17px; font-weight: 600; }
+  h4 { font-size: 15px; font-weight: 600; }
+  a { color: var(--primary-strong); text-decoration: none; }
+  .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+  .muted { color: var(--muted); }
+
+  /* ---- Top bar ---- */
+  header.top {
+    position: sticky; top: 0; z-index: 50; background: rgba(250,248,255,.82);
+    backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+  }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .wordmark { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--ink); }
+  .wordmark i { color: var(--primary-strong); font-style: normal; }
+  .top-actions { display: flex; gap: 10px; align-items: center; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer;
+    border-radius: 12px; padding: 11px 20px; border: 1px solid transparent; transition: transform .15s var(--ease-out), box-shadow .15s var(--ease-out), opacity .15s;
+    display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--primary-strong); color: #fff; box-shadow: 0 6px 18px rgba(157,78,221,.28); }
+  .btn-primary:hover { box-shadow: 0 8px 24px rgba(157,78,221,.38); }
+  .btn-primary:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+  .btn-ghost { background: var(--surface); color: var(--ink); border-color: var(--border); }
+  .btn-ghost:hover { border-color: var(--primary); }
+  .btn-block { width: 100%; justify-content: center; }
+
+  /* ---- Views ---- */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ---- Form view ---- */
+  #form-view { min-height: calc(100vh - 60px); display: none; align-items: center; }
+  #form-view.active { display: flex; }
+  .hero { text-align: center; padding: 40px 0 56px; width: 100%; }
+  .hero .eyebrow { display: inline-block; margin-bottom: 14px; }
+  .hero h1 { max-width: 720px; margin: 0 auto 14px; }
+  .hero p.sub { font-size: 17px; color: var(--muted); max-width: 560px; margin: 0 auto 30px; }
+  .form-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+    padding: 26px; max-width: 480px; margin: 0 auto; box-shadow: var(--shadow); text-align: left;
+  }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; margin-bottom: 7px; }
+  .field input {
+    width: 100%; padding: 13px 15px; font-size: 15px; font-family: var(--font-body);
+    border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--ink); transition: border-color .15s;
+  }
+  .field input:focus { outline: none; border-color: var(--primary); background: #fff; }
+  .form-note { font-size: 13px; color: var(--muted); margin-top: 14px; text-align: center; }
+  .form-note b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Loading view ---- */
+  #loading-view { min-height: calc(100vh - 60px); display: none; align-items: center; }
+  #loading-view.active { display: flex; }
+  .loader { text-align: center; padding: 40px 0; width: 100%; max-width: 560px; margin: 0 auto; }
+  .spinner {
+    width: 74px; height: 74px; margin: 0 auto 26px; border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--primary-strong), var(--info), var(--orchid, #D98BF0), var(--primary-strong));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 0); mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 0);
+    animation: spin 1.1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader h2 { margin-bottom: 8px; }
+  .stage-msg { font-size: 16px; color: var(--ink); min-height: 24px; margin-bottom: 22px; transition: opacity .3s; font-weight: 500; }
+  .bar { height: 8px; background: var(--primary-soft); border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
+  .bar i { display: block; height: 100%; width: 3%; background: var(--grad); border-radius: 99px; transition: width .8s var(--ease-out); }
+  .loader .timer { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .loader .disclaimer { font-size: 13px; color: var(--muted); margin-top: 26px; line-height: 1.55; }
+
+  /* ---- Report view ---- */
+  #report-view { padding: 30px 0 90px; }
+  .rep-hero {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+    padding: 26px 28px; box-shadow: var(--shadow); margin-bottom: 20px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap;
+  }
+  .rep-hero .meta { font-size: 13.5px; color: var(--muted); margin-top: 6px; }
+  .rep-hero h1 { font-size: 30px; }
+  .threat-badge {
+    display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 12px 20px; border-radius: 16px; min-width: 120px; text-align: center;
+  }
+  .threat-badge .lvl { font-family: var(--font-display); font-weight: 700; font-size: 20px; line-height: 1; }
+  .threat-badge .cap { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; opacity: .85; }
+  .threat-High { background: #FCE9EC; color: #C0344E; }
+  .threat-Moderate { background: #FCF2E1; color: #B77613; }
+  .threat-Low { background: #E4F6EE; color: #1E8A5F; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 24px 26px; box-shadow: var(--shadow); margin-bottom: 18px; }
+  .section > h2 { margin-bottom: 4px; }
+  .section > .sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .section-head .n { width: 30px; height: 30px; border-radius: 9px; background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 14px; flex: none; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+  .stat { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+  .stat .v { font-family: var(--font-display); font-weight: 700; font-size: 26px; color: var(--primary-strong); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat .k { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+
+  .prose p { margin-bottom: 12px; color: var(--ink); }
+  .prose p:last-child { margin-bottom: 0; }
+
+  .findings { list-style: none; display: grid; gap: 10px; }
+  .findings li { display: flex; gap: 11px; align-items: flex-start; font-size: 14.5px; }
+  .findings li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--primary-strong); margin-top: 8px; flex: none; }
+
+  .callout { border-radius: 14px; padding: 15px 17px; margin-top: 14px; font-size: 14.5px; }
+  .callout.threat { background: #FCEAED; border: 1px solid #F3C9D2; }
+  .callout.opp { background: #E7F6EF; border: 1px solid #C4E9D8; }
+  .callout.rec { background: var(--primary-soft); border: 1px solid #DCC8F3; }
+  .callout .lbl { font-weight: 700; font-family: var(--font-display); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; display: block; }
+  .callout.threat .lbl { color: #C0344E; }
+  .callout.opp .lbl { color: #1E8A5F; }
+  .callout.rec .lbl { color: var(--primary-strong); }
+
+  /* action plan */
+  .actions { display: grid; gap: 12px; }
+  .action { display: flex; gap: 14px; border: 1px solid var(--border); border-radius: 14px; padding: 15px 16px; background: var(--bg); }
+  .action .pri { width: 30px; height: 30px; border-radius: 50%; background: var(--primary-strong); color: #fff; display: grid; place-items: center; font-weight: 700; font-family: var(--font-display); flex: none; font-size: 14px; }
+  .action .body { flex: 1; }
+  .action .body h4 { margin-bottom: 4px; }
+  .action .body p { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+  .chips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .chip { font-size: 11.5px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
+  .chip.impact-High { background: #FCE9EC; color: #C0344E; border-color: #F3C9D2; }
+  .chip.impact-Medium { background: #FCF2E1; color: #B77613; border-color: #F0DDB4; }
+  .chip.impact-Low { background: #E4F6EE; color: #1E8A5F; border-color: #C4E9D8; }
+
+  /* checklist */
+  .checks { display: grid; gap: 8px; }
+  .check { display: flex; gap: 12px; align-items: flex-start; padding: 11px 13px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); }
+  .check .ic { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none; font-size: 13px; font-weight: 700; color: #fff; }
+  .check.pass .ic { background: var(--success); }
+  .check.fail .ic { background: var(--danger); }
+  .check .txt { font-size: 14px; }
+  .check .txt .name { font-weight: 600; }
+  .check .txt .note { color: var(--muted); font-size: 13px; }
+
+  /* competitor ranking table */
+  .rank-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .rank-table th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .rank-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+  .rank-table tr:last-child td { border-bottom: none; }
+  .rank-table tr.you { background: var(--primary-soft); }
+  .rank-table tr.you td { font-weight: 600; }
+  .rank-table .rnk { font-family: var(--font-display); font-weight: 700; color: var(--muted); width: 44px; }
+  .you-tag { font-size: 10.5px; font-weight: 700; background: var(--primary-strong); color: #fff; padding: 1px 7px; border-radius: 99px; margin-left: 7px; vertical-align: middle; }
+
+  /* competitor cards */
+  .comp-card { border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; margin-bottom: 14px; }
+  .comp-card:last-child { margin-bottom: 0; }
+  .comp-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+  .comp-top h4 { font-size: 18px; }
+  .comp-top .cmeta { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .comp-threat { text-align: right; }
+  .comp-threat .num { font-family: var(--font-display); font-weight: 700; font-size: 22px; }
+  .comp-threat .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .col-box h5 { font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; font-family: var(--font-display); }
+  .col-box.win h5 { color: var(--success); }
+  .col-box.lose h5 { color: var(--danger); }
+  .col-box ul { list-style: none; display: grid; gap: 6px; }
+  .col-box li { font-size: 13.5px; display: flex; gap: 8px; align-items: flex-start; }
+  .col-box li::before { font-size: 12px; margin-top: 1px; }
+  .col-box.win li::before { content: "▲"; color: var(--success); }
+  .col-box.lose li::before { content: "▼"; color: var(--danger); }
+
+  /* search rankings */
+  .sr-item { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; background: var(--bg); flex-wrap: wrap; }
+  .sr-item .q { font-weight: 600; font-size: 14px; }
+  .sr-item .q small { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .sr-pos { font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 99px; white-space: nowrap; }
+  .sr-pos.good { background: #E4F6EE; color: #1E8A5F; }
+  .sr-pos.mid { background: #FCF2E1; color: #B77613; }
+  .sr-pos.bad { background: #FCE9EC; color: #C0344E; }
+
+  /* keyword clusters */
+  .kw-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .kw-group h5 { font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 9px; font-family: var(--font-display); }
+  .kw-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .kw-tag { font-size: 12.5px; padding: 4px 10px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); }
+  .kw-group.neg .kw-tag { background: #FCEAED; border-color: #F3C9D2; color: #C0344E; }
+
+  /* error */
+  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #2A1E3F; color: #fff; padding: 13px 20px; border-radius: 12px; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25); z-index: 200; max-width: 90vw; display: none; }
+  .toast.show { display: block; }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 27px; }
+    .two-col { grid-template-columns: 1fr; }
+    .rep-hero { flex-direction: column; }
+    .section { padding: 20px 18px; }
+    .rank-table th:nth-child(4), .rank-table td:nth-child(4) { display: none; }
+  }
+
+  @media print {
+    header.top, .top-actions, #form-view, #loading-view, .print-hide { display: none !important; }
+    body { background: #fff; }
+    .section, .rep-hero { box-shadow: none; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="wordmark" href="/">Restro<i>Pulse</i></a>
+    <div class="top-actions">
+      <a class="btn btn-ghost print-hide" href="/">Home</a>
+      <button class="btn btn-ghost print-hide" id="new-scan-btn" style="display:none;">New scan</button>
+      <button class="btn btn-ghost print-hide" id="print-btn" style="display:none;">Download</button>
+    </div>
+  </div>
+</header>
+
+<!-- View 1: input form -->
+<div class="view" id="form-view">
+  <div class="wrap">
+    <div class="hero">
+      <span class="label eyebrow">Deep Restaurant Intelligence</span>
+      <h1>See exactly how you stack up against the <span class="grad-text">restaurants next door</span></h1>
+      <p class="sub">A live, AI-powered competitive audit built from real Google Maps data — your ranking, your competitors' strengths and weaknesses, and a prioritized action plan.</p>
+      <form class="form-card" id="scan-form" autocomplete="off">
+        <div class="field">
+          <label class="label" for="in-name">Restaurant name</label>
+          <input id="in-name" type="text" placeholder="e.g. Truffles" required />
+        </div>
+        <div class="field">
+          <label class="label" for="in-city">City</label>
+          <input id="in-city" type="text" placeholder="e.g. Bengaluru" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="run-btn">Run deep analysis</button>
+        <p class="form-note">Real Google + AI analysis takes <b>about 2–3 minutes</b>. Keep this tab open.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- View 2: loading -->
+<div class="view" id="loading-view">
+  <div class="wrap">
+    <div class="loader">
+      <div class="spinner"></div>
+      <h2 id="loading-title">Analyzing your restaurant…</h2>
+      <p class="stage-msg" id="stage-msg">Locating your restaurant on Google Maps…</p>
+      <div class="bar"><i id="prog-bar"></i></div>
+      <p class="timer" id="timer">0:00 elapsed</p>
+      <p class="disclaimer">We're pulling your live Google profile, scanning up to 60 nearby competitors, and running an AI competitive analysis. This is a real analysis, not a demo — it takes a couple of minutes.</p>
+    </div>
+  </div>
+</div>
+
+<!-- View 3: report -->
+<div class="view" id="report-view">
+  <div class="wrap" id="report-root"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = "";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+function showView(id) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  $(id).classList.add("active");
+  window.scrollTo(0, 0);
+}
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 5000);
+}
+
+/* ---------- Loading animation ---------- */
+const STAGES = [
+  "Locating your restaurant on Google Maps…",
+  "Pulling your live Google Business Profile…",
+  "Scanning restaurants within 7 km of you…",
+  "Ranking up to 60 nearby competitors…",
+  "Scoring each competitor's threat level…",
+  "Analyzing competitor strengths & weaknesses…",
+  "Benchmarking delivery platform presence…",
+  "Mapping your keyword & search visibility…",
+  "Writing your executive summary & action plan…",
+  "Finalizing your strategic verdict…",
+];
+let loadTimer = null, loadStart = 0, stageIdx = 0, stageTimer = null;
+function startLoading() {
+  showView("loading-view");
+  loadStart = Date.now(); stageIdx = 0;
+  $("stage-msg").textContent = STAGES[0];
+  $("prog-bar").style.width = "4%";
+  // elapsed clock + a progress bar that eases toward ~92% over ~3 min (never completes until done)
+  loadTimer = setInterval(() => {
+    const s = Math.floor((Date.now() - loadStart) / 1000);
+    $("timer").textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")} elapsed`;
+    const pct = Math.min(92, 4 + (s / 190) * 88);
+    $("prog-bar").style.width = pct.toFixed(1) + "%";
+  }, 500);
+  // advance stage text on a schedule (~18s each)
+  stageTimer = setInterval(() => {
+    stageIdx = Math.min(STAGES.length - 1, stageIdx + 1);
+    const m = $("stage-msg"); m.style.opacity = 0;
+    setTimeout(() => { m.textContent = STAGES[stageIdx]; m.style.opacity = 1; }, 250);
+  }, 18000);
+}
+function stopLoading() {
+  clearInterval(loadTimer); clearInterval(stageTimer); loadTimer = stageTimer = null;
+}
+
+/* ---------- Run analysis ---------- */
+async function runAnalysis(name, city) {
+  startLoading();
+  try {
+    const r = await fetch(API_BASE + "/api/intelligence/analyze", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, city }),
+    });
+    const j = await r.json();
+    if (!r.ok || !j.success) throw new Error(j.error || "Analysis failed. Please try again.");
+    stopLoading();
+    if (j.data.reportId) history.replaceState(null, "", "?id=" + encodeURIComponent(j.data.reportId));
+    renderReport(j.data.report);
+  } catch (err) {
+    stopLoading();
+    showView("form-view");
+    toast(err.message || "Something went wrong. Please try again.");
+  }
+}
+async function loadStoredReport(id) {
+  startLoading();
+  $("loading-title").textContent = "Loading your report…";
+  try {
+    const r = await fetch(API_BASE + "/api/intelligence/report/" + encodeURIComponent(id));
+    const j = await r.json();
+    if (!r.ok || !j.success) throw new Error(j.error || "Report not found.");
+    stopLoading();
+    renderReport(j.data.report || j.data);
+  } catch (err) {
+    stopLoading();
+    showView("form-view");
+    toast(err.message || "Could not load that report.");
+  }
+}
+
+/* ---------- Render helpers ---------- */
+function num(n) { return (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("en-IN"); }
+function sectionHead(n, title, sub) {
+  return `<div class="section-head"><span class="n">${n}</span><div><h2>${esc(title)}</h2>${sub ? `<div class="sub" style="margin:0">${esc(sub)}</div>` : ""}</div></div>`;
+}
+function paras(text) {
+  if (!text) return "";
+  return String(text).split(/\n{2,}|\n/).filter(p => p.trim()).map(p => `<p>${esc(p.trim())}</p>`).join("");
+}
+function list(arr) {
+  return (arr || []).map(x => `<li>${esc(x)}</li>`).join("");
+}
+
+/* ---------- Main report renderer ---------- */
+function renderReport(d) {
+  if (!d) { toast("Empty report."); showView("form-view"); return; }
+  const root = $("report-root");
+  const ca = d.competitorAnalysis || {};
+  const es = d.executiveSummary || {};
+  const rm = d.reviewMetrics || {};
+  const cr = d.competitorRanking || {};
+  const lvl = ca.overallThreatLevel || "Moderate";
+  const date = d.generatedAt ? new Date(d.generatedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "";
+
+  let html = "";
+
+  /* Hero */
+  html += `<div class="rep-hero">
+    <div>
+      <span class="label">Deep Intelligence Report</span>
+      <h1>${esc(d.restaurantName || "—")}</h1>
+      <p class="meta">${esc([d.restaurantCity, d.restaurantZone].filter(Boolean).join(" · "))}${d.restaurantAddress ? " · " + esc(d.restaurantAddress) : ""}${date ? " · Generated " + esc(date) : ""}</p>
+    </div>
+    <div class="threat-badge threat-${esc(lvl)}">
+      <span class="lvl">${esc(lvl)}</span>
+      <span class="cap">Threat level</span>
+    </div>
+  </div>`;
+
+  /* Snapshot stats */
+  html += `<div class="section"><div class="stat-grid">
+    <div class="stat"><div class="v">#${num(cr.rank)}</div><div class="k">Your rank of ${num(cr.total)} nearby</div></div>
+    <div class="stat"><div class="v">${rm.rating != null ? rm.rating : "—"}★</div><div class="k">Google rating</div></div>
+    <div class="stat"><div class="v">${num(rm.totalReviews)}</div><div class="k">Total reviews</div></div>
+    <div class="stat"><div class="v">${num(ca.averageThreatScore)}</div><div class="k">Avg competitor threat</div></div>
+    <div class="stat"><div class="v">${num((ca.topCompetitors || []).length)}</div><div class="k">Key rivals profiled</div></div>
+  </div></div>`;
+
+  /* Executive summary */
+  if (es.overview || (es.keyFindings || []).length) {
+    html += `<div class="section">${sectionHead(1, "Executive summary", "The competitive landscape at a glance")}`;
+    if (es.overview) html += `<div class="prose">${paras(es.overview)}</div>`;
+    if ((es.keyFindings || []).length) html += `<h4 style="margin:18px 0 10px;">Key findings</h4><ul class="findings">${list(es.keyFindings)}</ul>`;
+    if (es.immediateThreats) html += `<div class="callout threat"><span class="lbl">Immediate threats</span>${esc(es.immediateThreats)}</div>`;
+    if (es.growthOpportunities) html += `<div class="callout opp"><span class="lbl">Growth opportunities</span>${esc(es.growthOpportunities)}</div>`;
+    if (es.recommendation) html += `<div class="callout rec"><span class="lbl">Recommendation</span>${esc(es.recommendation)}</div>`;
+    html += `</div>`;
+  }
+
+  /* Action plan */
+  if ((es.actionPlan || []).length) {
+    html += `<div class="section">${sectionHead(2, "Priority action plan", "Ordered by impact — start at the top")}<div class="actions">`;
+    es.actionPlan.forEach(a => {
+      html += `<div class="action">
+        <div class="pri">${esc(a.priority)}</div>
+        <div class="body">
+          <h4>${esc(a.action)}</h4>
+          <p>${esc(a.detail)}</p>
+          <div class="chips">
+            ${a.impact ? `<span class="chip impact-${esc(a.impact)}">${esc(a.impact)} impact</span>` : ""}
+            ${a.timeframe ? `<span class="chip">${esc(a.timeframe)}</span>` : ""}
+          </div>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  /* Competitor ranking table */
+  if ((cr.topRanked || []).length) {
+    html += `<div class="section">${sectionHead(3, "Competitor ranking", `You rank #${num(cr.rank)} of ${num(cr.total)} restaurants nearby`)}
+      <div style="overflow-x:auto;"><table class="rank-table">
+        <thead><tr><th>#</th><th>Restaurant</th><th>Rating</th><th>Reviews</th></tr></thead><tbody>`;
+    cr.topRanked.forEach(r => {
+      html += `<tr class="${r.isBase ? "you" : ""}">
+        <td class="rnk">${num(r.rank)}</td>
+        <td>${esc(r.name)}${r.isBase ? '<span class="you-tag">YOU</span>' : ""}</td>
+        <td>${r.rating != null ? r.rating + "★" : "—"}</td>
+        <td>${num(r.reviews)}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+
+  /* Top competitors */
+  if ((ca.topCompetitors || []).length) {
+    html += `<div class="section">${sectionHead(4, "Your top competitors", "Where they beat you — and where you win")}`;
+    ca.topCompetitors.forEach(c => {
+      const winArr = c.whereYouWin || [];
+      const loseArr = c.whatTheyDoBetter || [];
+      html += `<div class="comp-card">
+        <div class="comp-top">
+          <div>
+            <h4>${esc(c.name)}</h4>
+            <div class="cmeta">${c.rating != null ? c.rating + "★" : "—"} · ${num(c.totalRatings != null ? c.totalRatings : c.reviews)} reviews${c.foodCuisine ? " · " + esc(c.foodCuisine) : ""}${c.distanceKm != null ? " · " + Number(c.distanceKm).toFixed(1) + " km away" : ""}${c.sentimentLabel ? " · " + esc(c.sentimentLabel) + " sentiment" : ""}</div>
+          </div>
+          ${c.threatScore != null ? `<div class="comp-threat"><div class="num" style="color:${c.threatScore>=70?'#C0344E':c.threatScore>=45?'#B77613':'#1E8A5F'}">${num(c.threatScore)}</div><div class="lbl">Threat score</div></div>` : ""}
+        </div>
+        <div class="two-col">
+          <div class="col-box lose"><h5>What they do better</h5><ul>${list(loseArr)}</ul></div>
+          <div class="col-box win"><h5>Where you win</h5><ul>${list(winArr)}</ul></div>
+        </div>
+        ${(c.pricingInsight || c.marketingEdge) ? `<div style="margin-top:14px;font-size:13.5px;color:var(--muted);display:grid;gap:6px;">
+          ${c.pricingInsight ? `<div><b style="color:var(--ink)">Pricing:</b> ${esc(c.pricingInsight)}</div>` : ""}
+          ${c.marketingEdge ? `<div><b style="color:var(--ink)">Marketing edge:</b> ${esc(c.marketingEdge)}</div>` : ""}
+        </div>` : ""}
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  /* Google profile checklist */
+  const gpc = d.googleProfileChecks || {};
+  const gpcKeys = Object.keys(gpc);
+  if (gpcKeys.length) {
+    const label = { websiteAvailable:"Website linked", googlePageUpdated:"Profile up to date", seoOptimised:"SEO-optimised profile", timingsUpdated:"Business hours listed", ownerPhotosAdded:"Photos added", respondingToReviews:"Responding to reviews", menuAvailable:"Menu accessible", contactInfoComplete:"Contact info complete" };
+    const passed = gpcKeys.filter(k => gpc[k] && gpc[k].pass).length;
+    html += `<div class="section">${sectionHead(5, "Google profile health", `${passed} of ${gpcKeys.length} checks passing`)}<div class="checks">`;
+    gpcKeys.forEach(k => {
+      const c = gpc[k] || {};
+      html += `<div class="check ${c.pass ? "pass" : "fail"}">
+        <span class="ic">${c.pass ? "✓" : "✕"}</span>
+        <div class="txt"><span class="name">${esc(label[k] || k)}</span>${c.note ? `<span class="note"> — ${esc(c.note)}</span>` : ""}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  /* Search rankings */
+  if ((d.searchRankings || []).length) {
+    html += `<div class="section">${sectionHead(6, "Search visibility", "Where you land for the searches that matter")}`;
+    d.searchRankings.forEach(s => {
+      let cls = "bad", txt = "Not ranked";
+      if (s.baseRanked && s.basePosition != null) {
+        txt = "#" + s.basePosition + (s.inMapPack ? " · map pack" : "");
+        cls = s.inMapPack ? "good" : s.basePosition <= 10 ? "mid" : "bad";
+      }
+      html += `<div class="sr-item">
+        <div class="q">${esc(s.query)}${s.topResult ? `<small>Top result: ${esc(s.topResult.name)} (${s.topResult.rating}★)</small>` : ""}</div>
+        <span class="sr-pos ${cls}">${esc(txt)}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  /* Keyword clusters */
+  const kw = d.yourKeywordCluster || {};
+  const kwKeys = Object.keys(kw).filter(k => (kw[k] || []).length);
+  if (kwKeys.length) {
+    const label = { primary:"Primary keywords", positive:"Positive sentiment", negative:"Watch / negative", longTail:"Long-tail phrases", trending:"Trending in your city", competitor:"Competitor keywords to target" };
+    html += `<div class="section">${sectionHead(7, "Keyword & SEO clusters", "The terms to own — and the ones to watch")}<div class="kw-groups">`;
+    kwKeys.forEach(k => {
+      html += `<div class="kw-group ${k === "negative" ? "neg" : ""}"><h5>${esc(label[k] || k)}</h5><div class="kw-tags">${(kw[k]||[]).map(t => `<span class="kw-tag">${esc(t)}</span>`).join("")}</div></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  /* Delivery benchmarks */
+  if ((d.deliveryBenchmarks || []).length) {
+    html += `<div class="section">${sectionHead(8, "Delivery platform benchmark", "Estimated Swiggy & Zomato standing vs. same-cuisine rivals")}
+      <div style="overflow-x:auto;"><table class="rank-table">
+        <thead><tr><th>Restaurant</th><th>Zomato</th><th>Swiggy</th><th>Items</th><th>Top dishes</th></tr></thead><tbody>`;
+    d.deliveryBenchmarks.forEach(b => {
+      html += `<tr class="${b.isBase ? "you" : ""}">
+        <td>${esc(b.name)}${b.isBase ? '<span class="you-tag">YOU</span>' : ""}</td>
+        <td>${b.zomatoRating != null ? b.zomatoRating + "★" : "—"}</td>
+        <td>${b.swiggyRating != null ? b.swiggyRating + "★" : "—"}</td>
+        <td>${num(b.totalItems)}</td>
+        <td style="font-size:13px;color:var(--muted)">${esc((b.topDishes || []).slice(0,3).join(", "))}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+
+  /* Final verdict */
+  if (d.finalStrategicVerdict) {
+    html += `<div class="section">${sectionHead(9, "Final strategic verdict", "Your position, your biggest opportunity, and a 90-day roadmap")}
+      <div class="prose">${paras(d.finalStrategicVerdict)}</div></div>`;
+  }
+
+  /* CTA */
+  html += `<div class="section print-hide" style="text-align:center;background:var(--primary-soft);border-color:#DCC8F3;">
+    <h2 style="margin-bottom:8px;">Ready to close the gap?</h2>
+    <p class="muted" style="max-width:520px;margin:0 auto 18px;">RestroPulse turns this report into action — online ordering, reviews on autopilot, and marketing that gets you found.</p>
+    <a class="btn btn-primary" href="/#pricing">Start free trial</a>
+  </div>`;
+
+  root.innerHTML = html;
+  $("new-scan-btn").style.display = "";
+  $("print-btn").style.display = "";
+  showView("report-view");
+}
+
+/* ---------- Wire up ---------- */
+$("scan-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = $("in-name").value.trim();
+  const city = $("in-city").value.trim();
+  if (!name || !city) { toast("Please enter both a restaurant name and a city."); return; }
+  runAnalysis(name, city);
+});
+$("new-scan-btn").addEventListener("click", () => {
+  history.replaceState(null, "", location.pathname);
+  $("new-scan-btn").style.display = "none";
+  $("print-btn").style.display = "none";
+  showView("form-view");
+});
+$("print-btn").addEventListener("click", () => window.print());
+
+/* On load: if ?id= present, load that stored report; else prefill from ?name/?city or show form */
+(function init() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
+  if (id) { loadStoredReport(id); return; }
+  const n = params.get("name"), c = params.get("city");
+  if (n) $("in-name").value = n;
+  if (c) $("in-city").value = c;
+  showView("form-view");
+  if (n && c) runAnalysis(n.trim(), c.trim());
+})();
+</script>
+</body>
+</html>

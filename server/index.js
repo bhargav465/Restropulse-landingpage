@@ -124,6 +124,12 @@ app.get("/api/pages/:slug", async (req, res) => {
   }
 });
 
+/* Clean URL for the deep-scan report page (public/report.html is also served
+   directly by express.static; this just gives it a tidy /report path). */
+app.get("/report", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "report.html"));
+});
+
 /* Homepage fallback: if no static public/index.html was served (e.g. on a
    serverless host where only the DB is available), send visitors to the
    MongoDB-served landing page. Runs after express.static, so local dev that
