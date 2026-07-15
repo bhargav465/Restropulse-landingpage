@@ -1,0 +1,25 @@
+# Render Blueprint — deploys the Express app straight from GitHub as a
+# persistent web service (no serverless timeout, so ~150s deep-scans run fine).
+# In Render: New + → Blueprint → pick this repo → set the sync:false secrets.
+services:
+  - type: web
+    name: restropulse-landingpage
+    runtime: node
+    plan: free            # bump to "starter" ($7/mo) to avoid free-tier cold starts
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/config/plans
+    envVars:
+      - key: DB_NAME
+        value: restropulse-dev
+      - key: RESTROGRADE_ANALYSIS_MODEL
+        value: claude-opus-4-6
+      - key: RESTROGRADE_BENCHMARK_MODEL
+        value: claude-sonnet-5
+      # Secrets — set these in the Render dashboard, never commit them:
+      - key: MONGODB_URI
+        sync: false
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
