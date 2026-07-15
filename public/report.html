@@ -90,6 +90,19 @@
     border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--ink); transition: border-color .15s;
   }
   .field input:focus { outline: none; border-color: var(--primary); background: #fff; }
+  .field { position: relative; }
+  .ac-box {
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 12px 34px rgba(36,27,53,.14); overflow: hidden; max-height: 288px; overflow-y: auto; display: none;
+  }
+  .ac-box.open { display: block; }
+  .ac-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background .1s; }
+  .ac-item:last-child { border-bottom: none; }
+  .ac-item:hover, .ac-item.active { background: var(--primary-soft); }
+  .ac-item .ac-name { font-weight: 600; font-size: 14.5px; color: var(--ink); }
+  .ac-item .ac-sec { font-size: 12.5px; color: var(--muted); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ac-empty { padding: 12px 14px; font-size: 13px; color: var(--muted); }
   .form-note { font-size: 13px; color: var(--muted); margin-top: 14px; text-align: center; }
   .form-note b { color: var(--ink); font-weight: 600; }
 
@@ -267,7 +280,8 @@
       <form class="form-card" id="scan-form" autocomplete="off">
         <div class="field">
           <label class="label" for="in-name">Restaurant name</label>
-          <input id="in-name" type="text" placeholder="e.g. Truffles" required />
+          <input id="in-name" type="text" placeholder="Start typing your restaurant…" autocomplete="off" required />
+          <div class="ac-box" id="ac-box"></div>
         </div>
         <div class="field">
           <label class="label" for="in-city">City</label>
@@ -610,6 +624,56 @@ $("new-scan-btn").addEventListener("click", () => {
   showView("form-view");
 });
 $("print-btn").addEventListener("click", () => window.print());
+
+/* ---------- Restaurant autocomplete (live Google Places) ---------- */
+(function autocomplete() {
+  const input = $("in-name"), box = $("ac-box"), cityEl = $("in-city");
+  let items = [], active = -1, seq = 0, timer = null, lastQ = "";
+  function hide() { box.classList.remove("open"); box.innerHTML = ""; items = []; active = -1; }
+  function pick(i) {
+    const it = items[i]; if (!it) return;
+    input.value = it.name;
+    if (it.city) cityEl.value = it.city;
+    hide();
+    (it.city ? $("run-btn") : cityEl).focus();
+  }
+  function render() {
+    if (!items.length) { box.innerHTML = '<div class="ac-empty">No matches — type a bit more, or just enter name + city.</div>'; box.classList.add("open"); return; }
+    box.innerHTML = items.map((it, i) =>
+      `<div class="ac-item${i === active ? " active" : ""}" data-i="${i}"><div class="ac-name">${esc(it.name)}</div>${it.secondary ? `<div class="ac-sec">${esc(it.secondary)}</div>` : ""}</div>`
+    ).join("");
+    box.classList.add("open");
+  }
+  async function fetchSug(q) {
+    const my = ++seq;
+    try {
+      const r = await fetch(API_BASE + "/api/intelligence/suggest?q=" + encodeURIComponent(q));
+      const j = await r.json();
+      if (my !== seq) return; // a newer keystroke already fired
+      items = (j.success && Array.isArray(j.data)) ? j.data.slice(0, 8) : [];
+      active = -1; render();
+    } catch (e) { if (my === seq) hide(); }
+  }
+  input.addEventListener("input", () => {
+    const q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) { hide(); lastQ = ""; return; }
+    if (q === lastQ) return; lastQ = q;
+    timer = setTimeout(() => fetchSug(q), 220);
+  });
+  input.addEventListener("keydown", (e) => {
+    if (!box.classList.contains("open") || !items.length) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); active = Math.min(items.length - 1, active + 1); render(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(0, active - 1); render(); }
+    else if (e.key === "Enter" && active >= 0) { e.preventDefault(); pick(active); }
+    else if (e.key === "Escape") { hide(); }
+  });
+  box.addEventListener("mousedown", (e) => {
+    const el = e.target.closest(".ac-item"); if (!el) return;
+    e.preventDefault(); pick(Number(el.dataset.i));
+  });
+  document.addEventListener("click", (e) => { if (!e.target.closest("#ac-box") && e.target !== input) hide(); });
+})();
 
 /* On load: if ?id= present, load that stored report; else prefill from ?name/?city or show form */
 (function init() {

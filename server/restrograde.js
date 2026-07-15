@@ -532,4 +532,47 @@ async function runAndStore(name, city) {
   return { reportId, data };
 }
 
-module.exports = { analyze, runAndStore, StageError };
+/* ---- Autocomplete (Google Places Autocomplete New) ----
+   Powers the report form's type-ahead. Restaurant-biased, India-first. Returns
+   light suggestions: { name, secondary, city } — city is a best-guess parsed
+   from the address so a pick can fill both form fields. */
+const AC_COUNTRIES = new Set(["India", "United States", "USA", "UK", "United Kingdom", "UAE", "United Arab Emirates", "Canada", "Australia", "Singapore"]);
+const AC_STATES = new Set(["Karnataka", "Maharashtra", "Delhi", "Tamil Nadu", "Telangana", "Kerala", "Gujarat", "Rajasthan", "West Bengal", "Uttar Pradesh", "Haryana", "Punjab", "Madhya Pradesh", "Andhra Pradesh", "Bihar", "Goa", "Odisha", "Assam", "Chandigarh", "Jharkhand", "Uttarakhand", "Himachal Pradesh", "Chhattisgarh", "Jammu and Kashmir", "Puducherry", "Meghalaya", "Manipur", "Tripura", "Nagaland"]);
+function guessCity(secondary) {
+  const parts = String(secondary || "").split(",").map(s => s.trim()).filter(Boolean);
+  if (!parts.length) return "";
+  const p = parts.slice();
+  if (AC_COUNTRIES.has(p[p.length - 1])) p.pop();
+  if (p.length > 1 && AC_STATES.has(p[p.length - 1])) p.pop();
+  // drop a trailing PIN code if present
+  if (p.length > 1 && /^\d{5,6}$/.test(p[p.length - 1])) p.pop();
+  return p[p.length - 1] || parts[0];
+}
+
+async function placesAutocomplete(input) {
+  const q = String(input || "").trim();
+  if (q.length < 2) return [];
+  if (!process.env.GOOGLE_MAPS_API_KEY) throw new StageError("Maps service not configured — set GOOGLE_MAPS_API_KEY.", 503);
+  const res = await fetch("https://places.googleapis.com/v1/places:autocomplete", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Goog-Api-Key": getGoogleKey() },
+    body: JSON.stringify({ input: q, includedPrimaryTypes: ["restaurant"], regionCode: "IN" }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 403) throw new StageError('Places API (New) request denied — enable "Places API (New)" and allow it on the key.', 503);
+    throw new StageError(`Suggestions failed (Places API: ${(data && data.error && data.error.status) || res.status}).`, 502);
+  }
+  return (data.suggestions || [])
+    .map(s => s.placePrediction)
+    .filter(Boolean)
+    .map(p => {
+      const sf = p.structuredFormat || {};
+      const name = (sf.mainText && sf.mainText.text) || (p.text && p.text.text) || "";
+      const secondary = (sf.secondaryText && sf.secondaryText.text) || "";
+      return { name, secondary, city: guessCity(secondary) };
+    })
+    .filter(s => s.name);
+}
+
+module.exports = { analyze, runAndStore, placesAutocomplete, StageError };

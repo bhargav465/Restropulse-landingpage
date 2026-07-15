@@ -282,6 +282,21 @@ router.post("/api/intelligence/analyze", async (req, res) => {
   }
 });
 
+// GET /api/intelligence/suggest?q=... — restaurant type-ahead for the report form.
+// Live Google Places autocomplete; returns [{ name, secondary, city }]. Fast (<1s).
+router.get("/api/intelligence/suggest", async (req, res) => {
+  try {
+    const q = (req.query.q || "").toString().trim();
+    if (q.length < 2) return res.json({ success: true, data: [] });
+    const { placesAutocomplete } = require("./restrograde");
+    const data = await placesAutocomplete(q);
+    res.json({ success: true, data });
+  } catch (err) {
+    const status = err && err.status ? err.status : 500;
+    res.status(status).json({ success: false, error: (err && err.message) || "Suggestions failed" });
+  }
+});
+
 // GET /api/intelligence/report/:reportId — fetch a stored deep-analysis report
 router.get("/api/intelligence/report/:reportId", async (req, res) => {
   try {
